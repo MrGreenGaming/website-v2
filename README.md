@@ -1,6 +1,6 @@
 # mrgreengaming-website
 
-> Website for MrGreenGaming
+> Website for MrGreenGaming, build with vue.js/nuxt and express.js
 
 ## Build Setup
 
