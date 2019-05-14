@@ -1,6 +1,7 @@
 const express = require('express')
 const app = (module.exports = express())
 const NodeCache = require('node-cache')
+const VipManager = require('../../server/base/vipManager')
 
 // TODO: handle announcements with x_utf_l4g_core_announcements
 const communityNewsCache = new NodeCache({ stdTTL: 7200 })
@@ -614,9 +615,13 @@ app.get('/me', async (req, res, next) => {
     deny(2, 'Authorization failed')
     return
   }
+  // Get if member VIP
+  member.vip = false
+  if (VipManager.getVip(member.id)) {
+    member.vip = true
+  }
 
   // Set cache
   authCache.set(authToken, member)
-
   res.json(member)
 })
