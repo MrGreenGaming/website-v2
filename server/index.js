@@ -16,11 +16,10 @@ function initConfig() {
   const env = require(envModule)
 
   global.Config = env.base
-
   setTimeout(() => {
     consola.info('Reloading server configuration')
     initConfig()
-  }, Config.configReloadTimeSeconds || 900 * 1000)
+  }, (Config.configReloadTimeSeconds || 900) * 1000)
 }
 
 // TODO: ERROR HANDLING WHEN NO DB CONNECTION
