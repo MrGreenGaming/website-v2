@@ -196,7 +196,7 @@
                   </v-layout>
                 </div>
 
-                <input type="file" class="mapUploadInputField" multiple @change="checkSelectedFile">
+                <input type="file" class="mapUploadInputField" multiple accept=".zip" @change="checkSelectedFile">
               </v-layout>
 
               <!-- Uploading info -->
