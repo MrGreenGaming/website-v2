@@ -416,20 +416,21 @@ export default {
         // const theFile = event.target.files[0];
         const fileName = theFile.name
 
-        // Check if file is zip
-        console.log('(debug) File MIME is: ', theFile.type)
-        const allowedTypes = [
-          'application/zip',
-          'application/zip-compressed',
-          'application/x-zip-compressed',
-          'application/zip',
-          'multipart/x-zip'
-        ]
-        if (!allowedTypes.includes(theFile.type)) {
-          // Selected file is not a zip file
-          this.addError("'" + fileName + "' is not a zip file.")
-          continue
-        }
+        // Check if file is zip - This does not work on some browsers, so check serverside
+        // console.log('(debug) File MIME is: ', theFile.type)
+        // const allowedTypes = [
+        //   'application/zip',
+        //   'application/zip-compressed',
+        //   'application/x-zip-compressed',
+        //   'application/zip',
+        //   'multipart/x-zip'
+        // ]
+        // if (!allowedTypes.includes(theFile.type)) {
+        //   // Selected file is not a zip file
+        //   this.addError("'" + fileName + "' is not a zip file.")
+        //   continue
+        // }
+
         // Check if file size is too big
         if (this.bytesConversion(theFile.size, 'mb') > this.maxMapFileSize) {
           this.addError("'" + fileName + "' is too big. (max " + this.maxMapFileSize + ' MB)')
