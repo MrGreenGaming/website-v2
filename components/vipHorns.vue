@@ -77,7 +77,7 @@
           <li>Horns must be less than <b>{{ maxHornLength }} seconds</b> long</li>
           <li>Horns must be in <b>.mp3 format</b></li>
           <li>Horns must be less than <b>{{ maxHornSize }} MB</b> in size</li>
-          <li>Horns must not be offensive or very annoying on purpose</li>
+          <li>Horns must not be offensive, have sexual contents or be very annoying/loud on purpose</li>
         </ul>
         <p class="mt-3 red--text caption font-weight-bold">
           Breaking any of these rules can result in removal/diciplinary actions
