@@ -209,7 +209,7 @@ export default {
     },
     async deleteHorn(id) {
       if (typeof id !== 'number') return
-      await this.$axios.$delete('api/hornupload/removeviphorn', {
+      await this.$axios.$post('api/hornupload/removeviphorn', {
         data: { hornid: id }
       }).catch((err) => {
         console.error(err)

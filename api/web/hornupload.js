@@ -7,14 +7,14 @@ const HornUploadManager = require('../../server/mta/hornUpload')
 const VipManager = require('../../server/base/vipManager')
 
 // Delete VIP horn
-app.delete('/removeviphorn', async (req, res) => {
+app.post('/removeviphorn', async (req, res) => {
   const deny = (errorCode, errorMessage) => {
-    res.status(422).json({
+    res.status(400).json({
       error: errorCode || 0,
       errorMessage: errorMessage || ''
     })
   }
-  const hornid = req.body.hornid
+  const hornid = req.body.data.hornid
   if (!hornid || typeof hornid !== 'number') {
     deny(5, 'Invalid horn ID')
     return
