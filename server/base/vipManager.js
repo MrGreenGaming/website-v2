@@ -1,6 +1,8 @@
 const consola = require('consola')
 const vipRefreshTime = 60 // Refresh every x minutes
 const moment = require('moment')
+const fse = require('fs-extra')
+const hornPath = 'clientUploads/vipHorns/'
 // const Nu = moment()
 // const Daarna = moment(Nu).add(100, 'd')
 // const laatste = moment(Daarna).add(100, 'd')
@@ -144,6 +146,30 @@ class vipManager {
 
   static getVip(id) {
     return vip.get(id) || false
+  }
+
+  // Get VIP horns
+  static getMemberHorns(forumid) {
+    return new Promise(async (resolve, reject) => {
+      await mtaServersDb.query('SELECT * FROM `vip_horns` WHERE `forumid` = ?', forumid).then((res) => {
+        resolve(res)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  }
+  // Delete VIP horn
+  static removeMemberHorn(forumid, hornid) {
+    if (typeof forumid !== 'number' || typeof hornid !== 'number') return
+    // Delete from DB
+    mtaServersDb.query('DELETE FROM `vip_horns` WHERE forumid = ? AND hornid = ?', [forumid, hornid]).catch((err) => {
+      console.error('vip horn delete: ', err)
+    })
+    // Delete file
+    const hornName = forumid + '-' + hornid + '.mp3'
+    fse.remove(hornPath + hornName).catch((err) => {
+      console.error('vip horn delete: ', err)
+    })
   }
 }
 

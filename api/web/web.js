@@ -573,6 +573,27 @@ app.get('/getgameserverinfo', (req, res, next) => {
   res.json(returnVal)
 })
 
+app.get('/getviphorns', async (req, res) => {
+  const deny = (errorCode, errorMessage) => {
+    res.status(500)
+    res.json({
+      error: errorCode || 0,
+      errorMessage: errorMessage || 'An error occurred'
+    })
+  }
+  const forumid = req.query.forumid
+  if (!forumid || typeof parseInt(forumid) !== 'number') {
+    deny(1, 'Invalid ID')
+    return
+  }
+
+  await VipManager.getMemberHorns(parseInt(forumid)).then((theHorns) => {
+    res.json(theHorns)
+  }).catch((err) => {
+    deny(2, err.message || 'Could not get VIP horns')
+  })
+})
+
 // fetchUser aut endpoint
 // Routed to here because fetchUser doesn't work with the forum /me endpoint
 // Cache auth key for faster refetch

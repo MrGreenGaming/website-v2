@@ -239,7 +239,8 @@ export default {
             { title: 'Stats', route: '/mta/stats' },
             { title: 'Tops', route: '/mta/toptimes' },
             // { title: "Team", route: "/mta/team" },
-            { title: 'Map Upload', route: '/mta/mapupload' }
+            { title: 'Map Upload', route: '/mta/mapupload' },
+            { title: 'VIP Horns', route: '/mta/viphorns' }
           ]
         }
       ]

@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const consola = require('consola')
+const fse = require('fs-extra')
 
 // export the server middleware
 module.exports = {
@@ -97,9 +98,27 @@ app.post('/ipn', async function (req, res, next) {
   PayPalService.handle(body)
 })
 
+// Vip horns file serve
+app.get('/viphorn', async function (req, res) {
+  const id = req.query.id
+  const hornPath = '././clientUploads/vipHorns/'
+  if (!id || typeof id !== 'string') {
+    res.json('Invalid ID')
+    return
+  }
+  const file = hornPath + id + '.mp3'
+  const exists = await fse.pathExists(file)
+  if (exists) {
+    res.download(file)
+  } else {
+    res.json('Invalid ID')
+  }
+})
+
 // Routes
 app.use('/web', require('./web/web'))
 app.use('/mapupload', require('./web/mapupload'))
+app.use('/hornupload', require('./web/hornupload'))
 app.use('/admin', require('./web/admin'))
 app.use('/account', require('./account/account'))
 app.use('/users', require('./account/users'))
