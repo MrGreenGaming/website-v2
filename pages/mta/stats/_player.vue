@@ -66,7 +66,7 @@
                   </v-card-title>
                   <v-divider />
                   <v-list dense style="min-height:200px;">
-                    <v-list-tile v-for="statRow in stat.stats" :key="statRow.name" @click="true">
+                    <v-list-tile v-for="statRow in stat.stats" :key="statRow.name" @click="">
                       <v-list-tile-content class="font-weight-bold">
                         {{ statRow.name }}:
                       </v-list-tile-content>

@@ -134,15 +134,15 @@
                       Please review your order before purchasing.
                     </v-subheader>
 
-                    <v-list-tile v-if="donationData.type == 'vip'" @click="true">
+                    <v-list-tile v-if="donationData.type == 'vip'" @click="">
                       <b class="mr-2">VIP:</b> +{{ donationReceived.days }} days
                     </v-list-tile>
                     <v-divider />
-                    <v-list-tile @click="true">
+                    <v-list-tile @click="">
                       <b v-if="donationReceived.greencoins > 0 && donationData.type != 'vip'" class="mr-2">GreenCoins:</b> +{{ donationReceived.greencoins }} GC
                     </v-list-tile>
                     <v-divider />
-                    <v-list-tile @click="true">
+                    <v-list-tile @click="">
                       <b class="mr-2">Total: € {{ donationData.amount }}</b>
                     </v-list-tile>
                   </v-list>

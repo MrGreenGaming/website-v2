@@ -25,7 +25,7 @@
           <v-container fluid>
             <v-list v-if="typeof leaderboard === 'object' && Object.keys(leaderboard).length > 0">
               <v-flex v-for="rank in leaderboard" :key="rank.rank">
-                <v-list-tile @click="true">
+                <v-list-tile @click="">
                   <span
                     class="font-size-bold mr-3"
                     style="width:30px;"
@@ -54,7 +54,7 @@
             <!-- If empty or loading -->
             <v-list v-else>
               <v-flex v-for="rank in 100" :key="rank">
-                <v-list-tile @click="true">
+                <v-list-tile @click="">
                   <span
                     class="font-size-bold mr-3"
                     style="width:30px;"

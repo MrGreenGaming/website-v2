@@ -53,7 +53,7 @@
                       :key="submenu.title"
                       :to="submenu.route"
                       ripple
-                      @click="true"
+                      @click=""
                     >
                       {{ submenu.title }}
                     </v-list-tile>
@@ -72,7 +72,7 @@
             style="position:relative;"
             nuxt
             to="/admin"
-            @click="true"
+            @click=""
           >
             Admin
           </v-tab>
@@ -120,7 +120,7 @@
               <v-list-tile
                 v-for="(item, i) in userMenuItemsLoggedIn"
                 :key="i"
-                @click="true"
+                @click=""
               >
                 <v-list-tile-title @click="clickedUserMenu(item.action)">
                   {{ item.title }}
@@ -132,7 +132,7 @@
               <v-list-tile
                 v-for="(item, i) in userMenuItemsLoggedOut"
                 :key="i"
-                @click="true"
+                @click=""
               >
                 <v-list-tile-title @click="clickedUserMenu(item.action)">
                   {{ item.title }}
@@ -174,7 +174,7 @@
       </v-container>
       <v-list class="pt-0" dense>
         <template v-for="(item, index ) in menuItems">
-          <v-list-tile :key="index" nuxt :to="item.route" @click="true">
+          <v-list-tile :key="index" nuxt :to="item.route" @click="">
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>

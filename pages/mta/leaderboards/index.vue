@@ -17,7 +17,7 @@
             <v-divider />
             <!-- <no-ssr> -->
             <v-list>
-              <v-list-tile v-for="rank in leaderBoardRankings[leaderboard.modeName]" :key="rank.rank" @click="true">
+              <v-list-tile v-for="rank in leaderBoardRankings[leaderboard.modeName]" :key="rank.rank" @click="">
                 <span class="font-size-bold" style="width:30px;">{{ rank.rank }}.</span>
                 <v-list-tile-content class="font-weight-bold">
                   <no-ssr>

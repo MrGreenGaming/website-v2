@@ -16,6 +16,7 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    "vue/valid-v-on": "off",
     "no-console": 0,
     "no-tabs": 0,
     "no-mixed-spaces-and-tabs": 0
