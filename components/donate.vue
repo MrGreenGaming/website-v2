@@ -91,7 +91,7 @@
                   <v-flex v-if="donationData.type === 'vip'" class="subheading">
                     <b class="primary--text">{{ donationReceived.days }}</b> days of VIP
                   </v-flex>
-                  <v-flex v-if="donationData.type === 'greencoins'" class="subheading">
+                  <v-flex v-if="donationReceived.greencoins > 0" class="subheading">
                     <b class="primary--text">{{ donationReceived.greencoins }}</b> GreenCoins
                   </v-flex>
                   <!-- GreenCoins -->
