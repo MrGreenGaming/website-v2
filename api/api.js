@@ -111,7 +111,30 @@ app.get('/viphorn', async function (req, res) {
   if (exists) {
     res.download(file)
   } else {
-    res.json('Invalid ID')
+    res.status(400).send('File doesnt exist')
+  }
+})
+
+const md5File = require('md5-file')
+app.get('/viphornchecksum', async function (req, res) {
+  const id = req.query.id
+  const hornPath = '././clientUploads/vipHorns/'
+  if (!id || typeof id !== 'string') {
+    res.status(400).send('Invalid ID')
+    return
+  }
+  const file = hornPath + id + '.mp3'
+  const exists = await fse.pathExists(file)
+  if (exists) {
+    md5File(file, (err, hash) => {
+      if (err) {
+        res.status(400).send('Could not get checksum')
+      } else {
+        res.send(hash.toUpperCase())
+      }
+    })
+  } else {
+    res.status(400).send('File doesnt exist')
   }
 })
 
