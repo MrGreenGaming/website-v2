@@ -272,7 +272,7 @@ export default {
       errorMessages: [],
       files: [],
       validGameModePrefixes: ['nts', 'race', 'dl', 'rtf', 'dd', 'ctf', 'sh'],
-      maxMapFileSize: 6, // In megabytes
+      maxMapFileSize: 8, // In megabytes
       mapCommentEditDialog: false,
       mapCommentEditValue: '',
       mapCommentEditCurrentlySelected: false,

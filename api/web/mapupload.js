@@ -24,7 +24,7 @@ const fileFilter = function (req, file, cb) {
   cb(null, true)
 }
 
-const mapMaxSize = 10000000 // in bytes 10000000
+const mapMaxSize = 11000000 // in bytes
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '././clientUploads/mapUploads/')
