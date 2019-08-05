@@ -145,6 +145,7 @@ app.use('/hornupload', require('./web/hornupload'))
 app.use('/admin', require('./web/admin'))
 app.use('/account', require('./account/account'))
 app.use('/users', require('./account/users'))
+app.use('/custompaintjobs', require('./mta/customPaintjobs'))
 
 // Catch all for 404 error
 app.all('*', (req, res) => {
