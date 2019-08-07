@@ -12,7 +12,7 @@ module.exports = {
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // Parse application/json
-app.use(bodyParser.json({ type: '*/*', limit: '10mb' }))
+app.use(bodyParser.json({ limit: '15mb' }))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 // Fixes body being an array when coming from MTASA. Needs further investigation.
