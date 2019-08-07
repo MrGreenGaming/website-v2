@@ -114,20 +114,28 @@ app.post('/getpaintjob', async (req, res) => {
 
 app.post('/savepaintjob', (req, res) => {
   const id = req.body.id
-  const data = req.body.data
+  let data = req.body.data
   if (!id || typeof id !== 'string') {
     res.json({
       error: 1,
       errorMessage: 'No or invalid name in request'
     })
     return
-  } else if (!data || typeof data !== 'string') {
+  } else if (!data || typeof data !== 'object') {
     res.json({
       error: 2,
       errorMessage: 'No or invalid data in request'
     })
     return
   }
-  paintJobManager.savePaintjob(data, id)
-  res.json('Success!')
+  data = data.join('')
+  if (data && typeof data === 'string') {
+    paintJobManager.savePaintjob(data, id)
+    res.json('Success!')
+  } else {
+    res.json({
+      error: 3,
+      errorMessage: 'Could not parse image data'
+    })
+  }
 })
