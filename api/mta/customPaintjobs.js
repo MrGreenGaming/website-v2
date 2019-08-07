@@ -8,10 +8,10 @@ const paintJobManager = require('../../server/mta/customPaintjobManager')
  */
 app.use('/', async (req, res, next) => {
   /**
-       *
-       * @param {number} [errorCode=0]
-       * @param {string} [errorMessage]
-       */
+	 *
+	 * @param {number} [errorCode=0]
+	 * @param {string} [errorMessage]
+	 */
   const deny = (errorCode, errorMessage) => {
     res.status(500)
     res.json({
@@ -19,25 +19,21 @@ app.use('/', async (req, res, next) => {
       errorMessage: errorMessage || 'No API access'
     })
   }
-  // Added query auth because forms can't have body
-  let authType = req.body
-  if (req.query.appId && req.query.appSecret) {
-    authType = req.query
-  }
+
   // Check app id presence
-  const appId = (req.appId = authType.appId =
-          typeof authType.appId === 'number'
-            ? authType.appId
-            : typeof authType.appId === 'string'
-              ? parseInt(authType.appId, 10)
-              : undefined)
+  const appId = (req.appId = req.body.appId =
+		typeof req.body.appId === 'number'
+		  ? req.body.appId
+		  : typeof req.body.appId === 'string'
+		    ? parseInt(req.body.appId, 10)
+		    : undefined)
   if (isNaN(appId)) {
     deny(1, 'Invalid App ID')
     return
   }
 
   // Check app secret presence
-  if (typeof authType.appSecret !== 'string' || !authType.appSecret) {
+  if (typeof req.body.appSecret !== 'string' || !req.body.appSecret) {
     deny(2, 'Invalid App Secret')
     return
   }
@@ -50,7 +46,7 @@ app.use('/', async (req, res, next) => {
 
   let isMatch
   try {
-    isMatch = await apiApp.verifySecretMatch(authType.appSecret)
+    isMatch = await apiApp.verifySecretMatch(req.body.appSecret)
   } catch (error) {
     console.error(error)
     deny(3, 'Internal error occurred when verifying app')
