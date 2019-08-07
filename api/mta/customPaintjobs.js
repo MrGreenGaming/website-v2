@@ -61,7 +61,7 @@ app.use('/', async (req, res, next) => {
   next()
 })
 
-app.get('/getmd5', async (req, res) => {
+app.post('/getmd5', async (req, res) => {
   const pjArray = req.body.paintjobs
   if (!pjArray || typeof pjArray !== 'object') {
     res.json({
@@ -84,7 +84,7 @@ app.get('/getmd5', async (req, res) => {
   res.json(md5Obj)
 })
 
-app.get('/getpaintjob', async (req, res) => {
+app.post('/getpaintjob', async (req, res) => {
   const paintjobId = req.body.id
   if (!paintjobId || typeof paintjobId !== 'string') {
     res.json({
