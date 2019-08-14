@@ -43,7 +43,7 @@
     "vue": "^2.6.10",
     "vue-paypal-checkout": "https://github.com/AfuSensi/vue-paypal-checkout/tarball/master",
     "vue-timeago": "^5.1.2",
-    "vuetify": "^1.5.16",
+    "vuetify": "^1.5.17",
     "vuetify-loader": "^1.3.0",
     "xml2js": "^0.4.19"
   },
@@ -55,7 +55,7 @@
     "eslint-config-standard": "^13.0.1",
     "eslint-loader": "^2.2.1",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jest": "^22.14.1",
+    "eslint-plugin-jest": "^22.15.1",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-prettier": "^2.7.0",
     "eslint-plugin-promise": "^4.2.1",
