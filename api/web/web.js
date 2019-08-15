@@ -633,7 +633,11 @@ app.get('/me', async (req, res, next) => {
     )
     member = endPointData.data
   } catch (err) {
-    deny(2, 'Authorization failed')
+    res.status(401)
+    res.json({
+      error: 2,
+      errorMessage: 'Authorization failed'
+    })
     return
   }
   // Get if member VIP

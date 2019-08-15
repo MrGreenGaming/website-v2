@@ -50,7 +50,11 @@ app.use('/', async (req, res, next) => {
       )
       member = returnedData.data
     } catch (err) {
-      deny(2, 'Authorization failed')
+      res.status(500)
+      res.json({
+        error: 2,
+        errorMessage: 'Authorization failed'
+      })
       return
     }
   }

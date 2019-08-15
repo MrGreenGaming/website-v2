@@ -56,7 +56,11 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   let userForumId
   if (!req.headers.authorization) {
     // No auth header
-    deny(1, 'User authorization failed. Please re-login to the website.')
+    res.status(401)
+    res.json({
+      error: 1,
+      errorMessage: 'User authorization failed. Please re-login to the website'
+    })
     return
   } else {
     // Check auth
@@ -69,11 +73,19 @@ app.post('/upload', upload.single('file'), async (req, res) => {
       )
       member = returnedData.data
     } catch (err) {
-      deny(2, 'User authorization failed. Please re-login to the website.')
+      res.status(401)
+      res.json({
+        error: 2,
+        errorMessage: 'User authorization failed. Please re-login to the website'
+      })
       return
     }
     if (!member.name || !member.id) {
-      deny(3, 'User authorization failed. Please re-login to the website.')
+      res.status(401)
+      res.json({
+        error: 3,
+        errorMessage: 'User authorization failed. Please re-login to the website'
+      })
       return
     } else {
       userName = member.name
