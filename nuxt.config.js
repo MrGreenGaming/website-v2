@@ -103,7 +103,7 @@ module.exports = {
         scope: ['profile'],
         response_type: 'token',
         token_type: 'Bearer',
-        redirect_uri: 'https://mrgreengaming.com/callback',
+        redirect_uri: 'https://mrgreengaming.com/login',
         // redirect_uri: 'http://localhost:3000/callback',
         client_id: 'ec945877107d68a66da01e449cb58534',
         token_key: 'access_token'
