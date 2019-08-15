@@ -1,10 +1,11 @@
-export default function ({ $axios }) {
-  // Used for debugging
-  // if (process.env.NODE_ENV !== 'development') {
-  // }
-  $axios.onRequest((config) => {
-    // console.log(config)
-    // console.log('axios base url: ' + config.baseURL)
-    // console.log('Making request to ' + config.url)
+export default function ({ $axios, app }) {
+  $axios.onError((error) => {
+    const code = parseInt(error.response && error.response.status)
+
+    if ([401, 403].includes(code)) {
+      app.$auth.logout()
+    }
+
+    return Promise.reject(error)
   })
 }
