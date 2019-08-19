@@ -157,7 +157,7 @@ class Users {
 
         const forumsDbResults = Config.forums.enabled
           ? await forumsDb.query(
-            `SELECT \`member_id\`, \`name\`, \`joined\`, \`pp_main_photo\`, \`pp_thumb_photo\`, \`members_seo_name\` FROM \`x_utf_l4g_core_members\` WHERE \`member_id\` = ? LIMIT 0,1`,
+            `SELECT \`member_id\`, \`name\`, \`joined\`, \`pp_main_photo\`, \`pp_thumb_photo\`, \`members_seo_name\`, \`temp_ban\` FROM \`x_utf_l4g_core_members\` WHERE \`member_id\` = ? LIMIT 0,1`,
             [id]
 					  )
           : undefined
@@ -181,8 +181,6 @@ class Users {
           return
         }
       }
-
-      // ToDo: Check if user is banned on forums
 
       const User = require('../classes/user')
       const user = new User(dbUserResult.userId)

@@ -122,7 +122,8 @@ app.post('/login', async (req, res) => {
     joinTimestamp: user.getCreated()
       ? Math.round(user.getCreated().getTime() / 1000)
       : undefined,
-    vip: VipManager.getVip(user.getId())
+    vip: VipManager.getVip(user.getId()),
+    banned: user.isBanned()
   })
 })
 
@@ -170,7 +171,8 @@ app.post('/details', async (req, res) => {
       photoThumb: user.getAvatarThumb(),
       title: undefined // Deprecated
     },
-    vip: VipManager.getVip(user.getId())
+    vip: VipManager.getVip(user.getId()),
+    banned: user.isBanned()
   })
 })
 
@@ -228,7 +230,8 @@ app.post('/details-multiple', async (req, res) => {
         photoThumb: user.getAvatarThumb(),
         title: undefined // Deprecated
       },
-      vip: VipManager.getVip(user.getId())
+      vip: VipManager.getVip(user.getId()),
+      banned: user.isBanned()
     }
     userReturn.push(singleUser)
   }

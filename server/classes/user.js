@@ -54,6 +54,10 @@ class User {
 		 *  @private */
     this.identifier = undefined
 
+    /** @type {boolean}
+		 *  @private */
+    this.banned = false
+
     this.setNextThink()
   }
 
@@ -143,6 +147,12 @@ class User {
 				(!forumsDbResult.pp_thumb_photo.includes('://')
 				  ? Config.url.avatars
 				  : '') + forumsDbResult.pp_thumb_photo
+    }
+    if (
+      typeof forumsDbResult.temp_ban === 'number' &&
+			forumsDbResult.temp_ban
+    ) {
+      this.banned = forumsDbResult.temp_ban === -1 || false
     }
   }
 
@@ -300,6 +310,14 @@ class User {
 	 */
   getIdentifier() {
     return this.identifier
+  }
+
+  /**
+	 * Get ban state
+	 * @return {boolean} identifier
+	 */
+  isBanned() {
+    return this.banned
   }
 }
 
