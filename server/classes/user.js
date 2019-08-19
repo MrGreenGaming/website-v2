@@ -54,7 +54,7 @@ class User {
 		 *  @private */
     this.identifier = undefined
 
-    /** @type {boolean}
+    /** @type {boolean|number}
 		 *  @private */
     this.banned = false
 
@@ -152,7 +152,16 @@ class User {
       typeof forumsDbResult.temp_ban === 'number' &&
 			forumsDbResult.temp_ban
     ) {
-      this.banned = forumsDbResult.temp_ban === -1 || false
+      if (forumsDbResult.temp_ban === 0) {
+        // Not banned
+        this.banned = false
+      } else if (forumsDbResult.temp_ban === -1) {
+        // Banned permanently
+        this.banned = true
+      } else {
+        // Temp ban Timestamp
+        this.banned = forumsDbResult.temp_ban
+      }
     }
   }
 
@@ -316,7 +325,7 @@ class User {
 	 * Get ban state
 	 * @return {boolean} identifier
 	 */
-  isBanned() {
+  getBanned() {
     return this.banned
   }
 }

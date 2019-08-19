@@ -123,7 +123,7 @@ app.post('/login', async (req, res) => {
       ? Math.round(user.getCreated().getTime() / 1000)
       : undefined,
     vip: VipManager.getVip(user.getId()),
-    banned: user.isBanned()
+    banned: user.getBanned()
   })
 })
 
@@ -172,7 +172,7 @@ app.post('/details', async (req, res) => {
       title: undefined // Deprecated
     },
     vip: VipManager.getVip(user.getId()),
-    banned: user.isBanned()
+    banned: user.getBanned()
   })
 })
 
@@ -231,7 +231,7 @@ app.post('/details-multiple', async (req, res) => {
         title: undefined // Deprecated
       },
       vip: VipManager.getVip(user.getId()),
-      banned: user.isBanned()
+      banned: user.getBanned()
     }
     userReturn.push(singleUser)
   }
