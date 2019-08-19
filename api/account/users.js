@@ -104,7 +104,7 @@ app.get('/:userId/summary', (req, res) => {
     avatar: user.getAvatar(),
     avatarThumb: user.getAvatarThumb(),
     vip: user.getVip(),
-    banned: user.isBanned(),
+    banned: user.getBanned(),
     generated: new Date()
   })
 })
