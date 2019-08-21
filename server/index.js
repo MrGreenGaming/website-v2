@@ -93,7 +93,7 @@ function initModules() {
       await VipManager.initialize()
       await DonationManager.initialize()
       // await Games.load()
-      await Leaderboards.initialize()
+      Leaderboards.initialize()
       await GameserversManager.initialize()
       await MapUploads.init()
     } catch (err) {
