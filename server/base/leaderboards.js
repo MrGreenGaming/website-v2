@@ -154,7 +154,7 @@ class leaderBoards {
       // mrgreengaming_gc.donations_OLD
       await mtaServersDb.query(
         'INSERT INTO mrgreengaming_mtasrvs.leaderboards (forumid, donations) ' +
-        'SELECT forum_id, ROUND(Sum(amount)/1000) as total FROM mrgreengaming_gc.donations_old ' +
+        'SELECT forum_id, ROUND(Sum(amount)/1000) as total FROM mrgreengaming_gc.donations_OLD ' +
         'GROUP BY forum_id ' +
         'ON DUPLICATE KEY UPDATE donations = donations + VALUES(donations)'
       )
