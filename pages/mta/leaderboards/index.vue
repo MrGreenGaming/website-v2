@@ -27,7 +27,8 @@
                 <span class="font-size-bold" style="width:30px;">{{ rank.rank }}.</span>
                 <v-list-tile-content class="font-weight-bold">
                   <no-ssr>
-                    <a style="text-decoration: none; max-width:200px; overflow: hidden; text-overflow: ellipsis;" :href="rank.profileUrl" target="_blank" v-html="rank.formattedName || rank.name || rank.forumid" />
+                    <a v-if="leaderboard.modeName !== 'donations'" style="text-decoration: none; max-width:200px; overflow: hidden; text-overflow: ellipsis;" :href="rank.profileUrl" target="_blank" v-html="rank.formattedName || rank.name || rank.forumid" />
+                    <a v-if="leaderboard.modeName === 'donations'" style="text-decoration: none; max-width:200px; overflow: hidden; text-overflow: ellipsis;" :href="rank.profileUrl" target="_blank" v-html="rank.formattedName || rank.name || 'Anonymous'" />
                   </no-ssr>
                 </v-list-tile-content>
                 <v-list-tile-content class="align-end">
