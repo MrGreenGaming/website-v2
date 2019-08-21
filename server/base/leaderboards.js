@@ -119,35 +119,20 @@ class leaderBoards {
           'GROUP BY forumid ' +
           'ON DUPLICATE KEY UPDATE `sh`=VALUES(`sh`), `dd`=VALUES(`dd`), `dl`=VALUES(`dl`); '
       )
+
       // RACE, RTF, NTS
       const rankPoints = new Map([{ rank: 1, points: 10 }, { rank: 2, points: 9 }, { rank: 3, points: 8 }, { rank: 4, points: 7 }, { rank: 5, points: 6 }, { rank: 6, points: 5 }, { rank: 7, points: 4 }, { rank: 8, points: 3 }, { rank: 9, points: 2 }, { rank: 10, points: 1 }].map(obj => [obj.rank, obj.points]))
       for (const mode of ['race', 'rtf', 'nts']) {
         // Full query, below it's split up to hopefully avoid deadlocks
-        /* await mtaServersDb.query(
-          'INSERT INTO leaderboards(forumid, ' + mode + ') ' +
-            'SELECT `forumid` TheID, ' +
-            "(SELECT COUNT(*)*10 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 1 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*9 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 2 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*8 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 3 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*7 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 4 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*6 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 5 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*5 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 6 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*4 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 7 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*3 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 8 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*)*2 FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 9 AND `forumid`=TheID)+ " +
-            "(SELECT COUNT(*) FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = 10 AND `forumid`=TheID) as points " +
-            'FROM `toptimes` ' +
-            'GROUP BY `forumid` ' +
-            'ON DUPLICATE KEY UPDATE `' + mode + '`= `' + mode + '` + VALUES(' + mode + ');'
-        ) */
         for (const [rank, points] of rankPoints.entries()) {
           await mtaServersDb.query(
-            'INSERT INTO leaderboards(forumid, ' + mode + ') ' +
+            'INSERT INTO leaderboards(forumid, ??) ' +
             'SELECT `forumid` TheID, ' +
-            '(SELECT COUNT(*)*' + points + " FROM `toptimes` WHERE `racemode`='" + mode + "' AND pos = " + rank + ' AND `forumid`=TheID) as points ' +
+            '(SELECT COUNT(*)*? FROM `toptimes` WHERE `racemode`=? AND pos = ? AND `forumid`=TheID) as points ' +
             'FROM `toptimes` ' +
             'GROUP BY `forumid` ' +
-            'ON DUPLICATE KEY UPDATE `' + mode + '`= `' + mode + '` + VALUES(' + mode + ');'
+            'ON DUPLICATE KEY UPDATE ?? = ?? + VALUES(??);',
+            [mode, points, mode, rank, mode, mode, mode]
           )
         }
       }
