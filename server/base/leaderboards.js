@@ -127,9 +127,7 @@ class leaderBoards {
         for (const [rank, points] of rankPoints.entries()) {
           await mtaServersDb.query(
             'INSERT INTO leaderboards(forumid, ??) ' +
-            'SELECT `forumid` TheID, ' +
-            '(SELECT COUNT(*)*? FROM `toptimes` WHERE `racemode`=? AND pos = ? AND `forumid`=TheID) as points ' +
-            'FROM `toptimes` ' +
+            'SELECT forumid, COUNT(*)*? FROM `toptimes` WHERE `racemode`= ? AND pos = ? ' +
             'GROUP BY `forumid` ' +
             'ON DUPLICATE KEY UPDATE ?? = ?? + VALUES(??);',
             [mode, points, mode, rank, mode, mode, mode]
