@@ -137,24 +137,28 @@ class leaderBoards {
         }
       }
 
-      // Donations
+      // Donation queries (fetches old donations too)
+
+      // mrgreengaming_base.payments
       await mtaServersDb.query(
-        'INSERT INTO mrgreengaming_mtasrvs.leaderboards(forumid, donations) ' +
-        'SELECT forum_id, ' +
-        'Sum(amount) AS total ' +
-        '    FROM   (SELECT forum_id, ' +
-        '        amount ' +
-        '    FROM   mrgreengaming_base.payments ' +
-        '    UNION ALL ' +
-        '    SELECT forum_id, ' +
-        '        amount ' +
-        '    FROM   mrgreengaming_gc.payments ' +
-        '    UNION ALL ' +
-        '    SELECT forum_id, ' +
-        '        ( amount / 1000 ) ' +
-        '    FROM   mrgreengaming_gc.donations_OLD) AS t ' +
-        'GROUP  BY forum_id ' +
-        'ON DUPLICATE KEY UPDATE `donations`=VALUES(total); '
+        'INSERT INTO mrgreengaming_mtasrvs.leaderboards (forumid, donations) ' +
+        'SELECT forum_id, Sum(amount) as total FROM mrgreengaming_gc.payments ' +
+        'GROUP BY forum_id ' +
+        'ON DUPLICATE KEY UPDATE donations = donations + VALUES(donations)'
+      )
+      // mrgreengaming_gc.payments
+      await mtaServersDb.query(
+        'INSERT INTO mrgreengaming_mtasrvs.leaderboards (forumid, donations) ' +
+        'SELECT forum_id, Sum(amount) as total FROM mrgreengaming_base.payments ' +
+        'GROUP BY forum_id ' +
+        'ON DUPLICATE KEY UPDATE donations = donations + VALUES(donations)'
+      )
+      // mrgreengaming_gc.donations_OLD
+      await mtaServersDb.query(
+        'INSERT INTO mrgreengaming_mtasrvs.leaderboards (forumid, donations) ' +
+        'SELECT forum_id, ROUND(Sum(amount)/1000) as total FROM mrgreengaming_gc.donations_old ' +
+        'GROUP BY forum_id ' +
+        'ON DUPLICATE KEY UPDATE donations = donations + VALUES(donations)'
       )
 
       // Greencoins
