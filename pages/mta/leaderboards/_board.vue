@@ -1,8 +1,12 @@
 <template>
   <v-container class="mx-0 px-0" fluid style="min-height:800px">
     <h1>Leaderboards - {{ currentBoard }}</h1>
-    <h3>Leaderboards are refreshed every 2 hours.</h3>
-    Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>. <br>
+    <h3>Leaderboards are refreshed every hour.</h3>
+    <div v-html="boardSubtitle[currentMode]" />
+    <b v-if="currentMode === 'donations' && $auth.state.loggedIn">
+      <a :href="$auth.$state.user.profileUrl+'edit/#core_pfield_30'" target="_blank">Opt-in/out of this list? Click Here.</a>
+    </b>
+    <br>
     <v-btn dark class="mx-0" @click="goBack()">
       Back
     </v-btn>
@@ -33,10 +37,18 @@
                   <v-list-tile-content class="font-weight-bold">
                     <no-ssr>
                       <a
+                        v-if="currentMode !== 'donations'"
                         style="text-decoration: none; max-width:200px; overflow: hidden; text-overflow: ellipsis;"
                         :href="rank.profileUrl"
                         target="_blank"
                         v-html="rank.formattedName || rank.name || rank.forumid"
+                      />
+                      <a
+                        v-else
+                        style="text-decoration: none; max-width:200px; overflow: hidden; text-overflow: ellipsis;"
+                        :href="rank.profileUrl"
+                        target="_blank"
+                        v-html="rank.formattedName || rank.name || 'Anonymous'"
                       />
                     </no-ssr>
                   </v-list-tile-content>
@@ -44,7 +56,7 @@
                     style="text-align:right; align-items: flex-end!important;"
                     class="align-end"
                   >
-                    <no-ssr> {{ rank.points }} points </no-ssr>
+                    <no-ssr> {{ getPointsString(rank.points) }} </no-ssr>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-divider />
@@ -86,7 +98,39 @@ export default {
         dd: 'Top DD Players',
         sh: 'Top SH Players',
         dl: 'Top DL Players',
-        rtf: 'Top RTF Players'
+        rtf: 'Top RTF Players',
+        greencoins: 'Top GreenCoins hoarders',
+        donations: 'Top Donators'
+      },
+      pointNames: {
+        total: 'points',
+        race: 'points',
+        nts: 'points',
+        dd: 'kills',
+        sh: 'kills',
+        dl: 'kills',
+        rtf: 'points',
+        greencoins: 'GC',
+        donations: '€'
+      },
+      boardSubtitle: {
+        total: `Rankings are calculated by setting toptimes. Each toptime rank rewards different amounts of points. <br> 
+              <b>Top 1: </b> 10 points - <b>Top 2: </b> 9 points - <b>Top 3: </b> 8 points - <b>Top 4: </b> 7 points - <b>Top 5: </b> 6 points - 
+              <b>Top 6: </b> 5 points - <b>Top 7: </b> 4 points - <b>Top 8: </b> 3 points - <b>Top 9: </b> 2 points - <b>Top 10: </b> 1 point`,
+        race: `Rankings are calculated by setting toptimes. Each toptime rank rewards different amounts of points. <br> 
+              <b>Top 1: </b> 10 points - <b>Top 2: </b> 9 points - <b>Top 3: </b> 8 points - <b>Top 4: </b> 7 points - <b>Top 5: </b> 6 points - 
+              <b>Top 6: </b> 5 points - <b>Top 7: </b> 4 points - <b>Top 8: </b> 3 points - <b>Top 9: </b> 2 points - <b>Top 10: </b> 1 point`,
+        nts: `Rankings are calculated by setting toptimes. Each toptime rank rewards different amounts of points. <br> 
+              <b>Top 1: </b> 10 points - <b>Top 2: </b> 9 points - <b>Top 3: </b> 8 points - <b>Top 4: </b> 7 points - <b>Top 5: </b> 6 points - 
+              <b>Top 6: </b> 5 points - <b>Top 7: </b> 4 points - <b>Top 8: </b> 3 points - <b>Top 9: </b> 2 points - <b>Top 10: </b> 1 point`,
+        dd: `Rankings are calculated by setting toptimes. Every <b>kill</b> from a <b>top 10</b> to <b>top 1</b> will be added together and counted as points.`,
+        sh: `Rankings are calculated by setting toptimes. Every <b>kill</b> from a <b>top 10</b> to <b>top 1</b> will be added together and counted as points.`,
+        dl: `Rankings are calculated by setting toptimes. Every <b>kill</b> from a <b>top 10</b> to <b>top 1</b> will be added together and counted as points.`,
+        rtf: `Rankings are calculated by setting toptimes. Each toptime rank rewards different amounts of points. <br> 
+              <b>Top 1: </b> 10 points - <b>Top 2: </b> 9 points - <b>Top 3: </b> 8 points - <b>Top 4: </b> 7 points - <b>Top 5: </b> 6 points - 
+              <b>Top 6: </b> 5 points - <b>Top 7: </b> 4 points - <b>Top 8: </b> 3 points - <b>Top 9: </b> 2 points - <b>Top 10: </b> 1 point`,
+        greencoins: 'Top GreenCoins Hoarders',
+        donations: 'Top donators. Thank you for supporting Mr. Green Gaming!'
       },
       isLoading: true
     }
@@ -132,6 +176,18 @@ export default {
       } else {
         this.currentBoard = this.boardNames[q]
         this.currentMode = q
+      }
+    },
+    getPointsString(points) {
+      if (this.currentMode === 'donations') {
+        const formatter = new Intl.NumberFormat('en-UK', {
+          style: 'currency',
+          currency: 'EUR'
+        })
+        return formatter.format(points)
+      } else {
+        const formattedPoints = new Intl.NumberFormat('en-UK', { maximumSignificantDigits: 3 }).format(points)
+        return `${formattedPoints} ${this.pointNames[this.currentMode]}`
       }
     }
   }

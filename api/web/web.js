@@ -399,7 +399,9 @@ app.get('/getleaderboardstop', async (req, res, next) => {
     dd: true,
     dl: true,
     sh: true,
-    total: true,
+    // total: true,
+    donations: true,
+    greencoins: true,
     rtf: true
   }
   const deny = (errorCode, errorMessage) => {

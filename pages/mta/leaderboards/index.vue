@@ -1,7 +1,7 @@
 <template>
   <v-container class="mx-0 px-0" fluid>
     <h1>Leaderboards</h1>
-    <h3>Leaderboards are refreshed every 2 hours.</h3>
+    <h3>Leaderboards are refreshed every hour.</h3>
     <v-layout wrap class="pt-4">
       <v-flex v-for="leaderboard in leaderboards" :key="leaderboard.name" xs12 sm6 class="px-2 mb-3">
         <v-card>
@@ -13,7 +13,13 @@
           </v-toolbar>
 
           <v-container fluid>
-            <div style="min-height:50px;" v-html="leaderboard.subtext" />
+            <div style="min-height:50px;">
+              <div v-html="leaderboard.subtext" />
+              <b v-if="leaderboard.modeName === 'donations' && $auth.state.loggedIn">
+                <a :href="$auth.$state.user.profileUrl+'edit/#core_pfield_30'" target="_blank">Opt-in/out of this list? Click Here.</a>
+              </b>
+            </div>
+
             <v-divider />
             <!-- <no-ssr> -->
             <v-list>
@@ -54,131 +60,86 @@ export default {
       leaderBoardRankings: false,
       leaderboards: [
         // {
-        // 	name: "Top Donators",
-        // 	subtext:
-        // 		"Thank you for your support. <b><a>Opt-in/out of this list? Click Here.</a></b>",
-        // 	queryName: "",
-        // 	content: [
-        // 		{ rank: 1, name: "KaliBwoy", value: "€700,-" },
-        // 		{ rank: 2, name: "Cena", value: "€640,-" },
-        // 		{ rank: 3, name: "Stig", value: "€560,-" },
-        // 		{ rank: 4, name: "Abrahax", value: "€305,-" },
-        // 		{ rank: 5, name: "Jack123", value: "€200,-" }
-        // 	]
-        // },
-        // {
-        // 	name: "Top GreenCoins Hoarders",
-        // 	subtext: "These are the players that hoarded the most GreenCoins",
-        // 	queryName: "",
-        // 	content: [
-        // 		{ rank: 1, name: "KaliBwoy", value: "1,356,030 GC" },
-        // 		{ rank: 2, name: "Cena", value: "1,010,586 GC" },
-        // 		{ rank: 3, name: "Stig", value: "952,546 GC" },
-        // 		{ rank: 4, name: "Abrahax", value: "854,242 GC" },
-        // 		{ rank: 5, name: "Jack123", value: "654,861 GC" }
-        // 	]
+        //   name: 'Top Overall Players',
+        //   modeName: 'total',
+        //   subtext:
+        // 		'Overall best players. ',
+        //   queryName: 'total',
+        //   content: [
+        //     {
+        //       rank: 1,
+        //       name: 'KaliBwoyKaliBwoyKaliBwoyKaliBwoyKaliBwoy',
+        //       value: '703 Tops'
+        //     },
+        //     { rank: 2, name: 'Cena', value: '680 Tops' },
+        //     { rank: 3, name: 'Stig', value: '310 Tops' },
+        //     { rank: 4, name: 'Abrahax', value: '205 Tops' },
+        //     { rank: 5, name: 'Jack123', value: '120 Tops' }
+        //   ]
         // },
         {
-          name: 'Top Overall Players',
-          modeName: 'total',
+          name: 'Top Donators',
+          modeName: 'donations',
           subtext:
-						'Overall best players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
-          queryName: 'total',
-          content: [
-            {
-              rank: 1,
-              name: 'KaliBwoyKaliBwoyKaliBwoyKaliBwoyKaliBwoy',
-              value: '703 Tops'
-            },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+						'Top donators. Thank you for your support!',
+          queryName: 'donations',
+          content: []
+        },
+        {
+          name: 'Top GreenCoins Hoarders',
+          modeName: 'greencoins',
+          subtext:
+						'These are the players that hoarded the most GreenCoins.',
+          queryName: 'greencoins',
+          content: []
         },
         {
           name: 'Top Race Players',
           modeName: 'race',
           subtext:
-						'Best Race players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
+						'Best Race players. ',
           queryName: 'race',
-          content: [
-            { rank: 1, name: 'KaliBwoy', value: '703 Tops' },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+          content: []
         },
         {
           name: 'Top NTS Players',
           modeName: 'nts',
           subtext:
-						'Best Never The Same players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
+						'Best Never The Same players. ',
           queryName: 'nts',
-          content: [
-            { rank: 1, name: 'KaliBwoy', value: '703 Tops' },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+          content: []
         },
         {
           name: 'Top DD Players',
           modeName: 'dd',
           subtext:
-						'Best Destruction Derby players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
+						'Best Destruction Derby players. ',
           queryName: 'dd',
-          content: [
-            { rank: 1, name: 'KaliBwoy', value: '703 Tops' },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+          content: []
         },
         {
           name: 'Top SH Players',
           modeName: 'sh',
           subtext:
-						'Best Shooter players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
+						'Best Shooter players. ',
           queryName: 'sh',
-          content: [
-            { rank: 1, name: 'KaliBwoy', value: '703 Tops' },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+          content: []
         },
         {
           name: 'Top DL Players',
           modeName: 'dl',
           subtext:
-						'Best DeadLine players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
+						'Best DeadLine players. ',
           queryName: 'dl',
-          content: [
-            { rank: 1, name: 'KaliBwoy', value: '703 Tops' },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+          content: []
         },
         {
           name: 'Top RTF Players',
           modeName: 'rtf',
           subtext:
-						'Best Reach The Flag players. Rankings are calculated by setting a <b>top 10</b> to <b>top 1</b>.',
+						'Best Reach The Flag players. ',
           queryName: 'rtf',
-          content: [
-            { rank: 1, name: 'KaliBwoy', value: '703 Tops' },
-            { rank: 2, name: 'Cena', value: '680 Tops' },
-            { rank: 3, name: 'Stig', value: '310 Tops' },
-            { rank: 4, name: 'Abrahax', value: '205 Tops' },
-            { rank: 5, name: 'Jack123', value: '120 Tops' }
-          ]
+          content: []
         }
         // {
         // 	name: "Top CTF Players",
@@ -211,7 +172,7 @@ export default {
     //   })
     let theData
     try {
-      theData = await $axios.$get('/api/web/getleaderboardstop/?amount=5&racemode=nts&racemode=race&racemode=dd&racemode=dl&racemode=sh&racemode=rtf&racemode=total')
+      theData = await $axios.$get('/api/web/getleaderboardstop/?amount=5&racemode=nts&racemode=race&racemode=dd&racemode=dl&racemode=sh&racemode=rtf&racemode=donations&racemode=greencoins')
     } catch (e) {
       console.log('Leaderboards asyncData Error:', e.config.url, e.response.status)
       return { leaderBoardRankings: [] }
@@ -222,11 +183,10 @@ export default {
     this.getLeaderboardsData()
   },
   methods: {
-
     async getLeaderboardsData() {
       // This method is now in asyncData
       await this.$axios
-        .$get('/api/web/getleaderboardstop/?amount=5&racemode=nts&racemode=race&racemode=dd&racemode=dl&racemode=sh&racemode=rtf&racemode=total')
+        .$get('/api/web/getleaderboardstop/?amount=5&racemode=nts&racemode=race&racemode=dd&racemode=dl&racemode=sh&racemode=rtf&racemode=donations&racemode=greencoins')
         .catch((err) => {
           console.error(err)
         }).then((res) => {
