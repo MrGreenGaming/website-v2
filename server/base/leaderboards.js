@@ -153,7 +153,7 @@ class leaderBoards {
       }
 
       // Donations
-      await db.query(
+      await mtaServersDb.query(
         'INSERT INTO mrgreengaming_mtasrvs.leaderboards(forumid, donations) ' +
         'SELECT forum_id, ' +
         'Sum(amount) AS total ' +
