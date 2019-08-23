@@ -294,13 +294,14 @@
             class="mx-3"
             :mask="'#####'"
             :rules="[rules.isPositive, rules.isNumber]"
+            @input="checkSettingInput"
           />
           <v-divider />
           <v-card-actions>
             <v-btn
               flat
               color="primary"
-              :disabled="!selectedSettingValue || !parseInt(selectedSettingValue,10) || selectedSettingValue < 0 || isBusy"
+              :disabled="selectedSettingValue < 0 || !isNumber(selectedSettingValue) || isBusy"
               @click="doAction(selectedSetting)"
             >
               Save Setting
@@ -648,9 +649,21 @@ export default {
         }
       }
     },
+    checkSettingInput() {
+      // Remove leading zero
+      if (this.selectedSettingValue.length > 1 && this.selectedSettingValue.charAt(0) === '0') {
+        const copyValue = this.selectedSettingValue
+        for (let i = 0; i < copyValue.length; i++) {
+          if (copyValue.charAt(i) === '0') {
+            this.selectedSettingValue = this.selectedSettingValue.substr(1)
+          } else {
+            break
+          }
+        }
+      }
+    },
     isNumber(val) {
-      if (parseInt(val, 10)) return true
-      return false
+      return !isNaN(parseInt(val, 10))
     },
     searchMembers: _.debounce(function (value) {
       if (!value) return
