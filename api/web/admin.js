@@ -211,3 +211,56 @@ app.get('/getsettings', (req, res, next) => {
   }
   res.json(returnSettings)
 })
+
+app.get('/getmemberbyid', async (req, res) => {
+  if (!req.query.memberid || !parseInt(req.query.memberid, 10)) {
+    res.status(400)
+    res.json({
+      error: 1,
+      errorMessage: 'Invalid or missing member ID in query'
+    })
+    return
+  }
+  const VipManager = require('../../server/base/vipManager')
+  const Users = require('../../server/base/users')
+  const ForumMembers = require('../../server/base/forumMembers')
+  // Get user
+  let returnObj
+  await Users.get(parseInt(req.query.memberid, 10)).catch((err) => {
+    res.status(400)
+    res.json({
+      error: 2,
+      errorMessage: err.message || 'Member not found'
+    })
+  }).then((user) => {
+    if (user) {
+      returnObj = {}
+      returnObj.vip = VipManager.getVip(parseInt(req.query.memberid, 10))
+      returnObj.greencoins = user.getCoins().getBalance()
+      returnObj.id = parseInt(req.query.memberid, 10)
+      returnObj.banned = user.getBanned()
+    } else {
+      res.status(400)
+      res.json({
+        error: 3,
+        errorMessage: 'Member not found'
+      })
+    }
+  })
+  if (!returnObj) return
+
+  await ForumMembers.getForumMember(parseInt(req.query.memberid, 10)).catch((err) => {
+    res.status(400)
+    res.json({
+      error: 4,
+      errorMessage: err.message || 'Forum Member not found'
+    })
+  }).then((forumMember) => {
+    returnObj.name = forumMember[0].name
+    returnObj.photoUrl = forumMember[0].photoUrl
+    returnObj.email = forumMember[0].email
+    returnObj.profileUrl = forumMember[0].profileUrl
+    returnObj.formattedName = forumMember[0].formattedName
+    res.json(returnObj)
+  })
+})

@@ -121,7 +121,111 @@
           </v-btn>
         </v-layout>
       </v-flex>
-      <v-divider class="mb-5" />
+      <v-divider class="mb-3 mt-3" />
+      <v-flex>
+        <!-- Finding members by ID -->
+        <h2>Find members by ID</h2>
+      </v-flex>
+
+      <v-layout>
+        <v-text-field
+          v-model="memberIDSearchValue"
+          type="number"
+          label="Member ID"
+          style="max-width:200px;"
+          class="mr-2"
+          :rules="[rules.isNumber]"
+        />
+        <v-btn
+          dark
+          :disabled="memberIDSearchLoading"
+          @click="getMemberByID(memberIDSearchValue)"
+        >
+          Search
+        </v-btn>
+      </v-layout>
+
+      <v-layout class="mb-4">
+        <v-progress-circular
+          v-if="memberIDSearchLoading"
+          size="50"
+          indeterminate
+          color="primary"
+        />
+        <h3 v-if="memberIDSearchError" class="red--text">
+          Error: {{ memberIDSearchError }}
+        </h3>
+        <v-layout v-if="memberIDSearchFetched && !memberIDSearchError" column>
+          <h3>Fetched member:</h3>
+          <v-divider class="mb-2" />
+
+          <v-card class="max-width=300px">
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <!-- <v-list-tile-title> -->
+                  <v-layout align-center row>
+                    <v-avatar class="mr-3">
+                      <img :src="memberIDSearchFetched.photoUrl" alt="Avatar" @error="setDefaultAvatar">
+                    </v-avatar>
+                    <div v-html="memberIDSearchFetched.formattedName || memberIDSearchFetched.name" />
+                  </v-layout>
+                <!-- </v-list-tile-title> -->
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <v-list-tile-title>
+                    <b>Forum ID</b>: {{ memberIDSearchFetched.id }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <v-list-tile-title>
+                    <b>GreenCoins</b>: {{ memberIDSearchFetched.greencoins || 0 }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <v-list-tile-title>
+                    <b>VIP</b>: {{ memberIDSearchFetched.vip || 0 }} days
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <v-list-tile-title>
+                    <b>E-mail</b>: {{ memberIDSearchFetched.email }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <v-list-tile-title>
+                    <b>Banned</b>: {{ memberIDSearchFetched.banned }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content class="font-size">
+                  <v-list-tile-title>
+                    <b>Profile URL</b>: <a :href="memberIDSearchFetched.profileUrl" target="_blank">{{ memberIDSearchFetched.profileUrl }}</a>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-card>
+        </v-layout>
+      </v-layout>
+      <v-divider class="mb-3" />
       <h2>Donation Settings</h2>
 
       <v-list two-line>
@@ -249,7 +353,7 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
-      <v-divider />
+      <v-divider class="mb-5" />
     </v-flex>
     <!-- Error/Success snackbars -->
     <v-snackbar
@@ -333,6 +437,10 @@ export default {
   middleware: 'auth',
   data() {
     return {
+      memberIDSearchValue: 0,
+      memberIDSearchLoading: false,
+      memberIDSearchFetched: false,
+      memberIDSearchError: false,
       adminIP: 0,
       donation_gc: 0,
       donation_vip: 0,
@@ -419,6 +527,36 @@ export default {
           this.adminIP = res || 0
         })
     },
+    async getMemberByID(id) {
+      this.memberIDSearchLoading = true
+      this.memberIDSearchError = false
+      this.memberIDSearchFetched = false
+      let authToken = this.$auth.getToken('forums')
+      if (!authToken) {
+        this.memberIDSearchError = 'You are not authorized. If this is incorrect, reload this page.'
+        this.memberIDSearchLoading = false
+        return
+      }
+      authToken = authToken.substr(7)
+      if (!id || !parseInt(id, 10)) {
+        this.memberIDSearchError = 'Invalid member ID specified.'
+        this.memberIDSearchLoading = false
+        return
+      }
+      await this.$axios.$get(`/api/admin/getmemberbyid/?memberid=${id}&authToken=${authToken}`).then((res) => {
+        if (res.banned) {
+          res.banned = true
+        }
+        if (res.vip) {
+          res.vip = this.getVipDays(res.vip) || 0
+        }
+        this.memberIDSearchFetched = res
+      }).catch((err) => {
+        this.memberIDSearchError = err.response.data.errorMessage || err.message
+      }).finally(() => {
+        this.memberIDSearchLoading = false
+      })
+    },
     async getSettings() {
       let authToken = this.$auth.getToken('forums')
       if (!authToken) return
@@ -436,7 +574,7 @@ export default {
       let result
       try {
         result = await this.$axios.$get(
-          '/api/admin/getsettings/?' + settingsQuery + '&authToken=' + authToken
+          `/api/admin/getsettings/?${settingsQuery}&authToken=${authToken}`
         )
       } catch (e) {
         console.error(e)
@@ -561,6 +699,16 @@ export default {
           break
       }
       this.isBusy = false
+    },
+    getVipDays(timestamp) {
+      if (!timestamp) return 0
+
+      const vipDate = new Date(timestamp * 1000)
+
+      const diff = vipDate.getTime() - new Date().getTime()
+      const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24))
+
+      return diffDays
     },
     clickedSettingChange(setting) {
       switch (setting) {
