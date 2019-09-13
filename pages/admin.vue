@@ -337,6 +337,27 @@
         <v-list-tile>
           <v-list-tile-content>
             <v-list-tile-title class="font-weight-bold">
+              Maximum donation amount
+            </v-list-tile-title>
+            <v-list-tile-sub-title>
+              Sets max donation amount in EUR
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action-text class="font-weight-bold subheading black--text">
+            €{{ donation_maximum }}
+          </v-list-tile-action-text>
+          <v-list-tile-action class="ml-4">
+            <v-btn ripple small @click="clickedSettingChange('donation_maximum')">
+              Change
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-divider />
+
+        <v-list-tile>
+          <v-list-tile-content>
+            <v-list-tile-title class="font-weight-bold">
               Donation Goal
             </v-list-tile-title>
             <v-list-tile-sub-title>
@@ -447,6 +468,7 @@ export default {
       donation_vip_gc: 0,
       donation_discount: 0,
       donation_minimum: 0,
+      donation_maximum: 0,
       donation_goal: 0,
       selectedMember: false,
       isLoading: false,
@@ -568,6 +590,7 @@ export default {
         'donation_vip',
         'donation_discount',
         'donation_minimum',
+        'donation_maximum',
         'donation_goal'
       ]
       const settingsQuery = settingsToFetch.join('&')
@@ -585,6 +608,9 @@ export default {
         for (const settingName in result) {
           const settingsValue = result[settingName]
           switch (settingName) {
+            case 'donation_maximum':
+              this.donation_maximum = settingsValue
+              break
             case 'donation_gc':
               this.donation_gc = settingsValue
               break
@@ -675,6 +701,7 @@ export default {
         case 'donation_vip':
         case 'donation_vip_gc':
         case 'donation_minimum':
+        case 'donation_maximum':
         case 'donation_goal':
           const newAmount = this.selectedSettingValue
           this.isBusy = true
@@ -742,6 +769,13 @@ export default {
           this.selectedSettingSubText = 'Sets the discount in %'
           this.selectedSettingValue = this.donation_vip_gc
           // this.settingsDialog = true;
+          break
+        case 'donation_maximum':
+          this.selectedSetting = 'donation_maximum'
+          this.selectedSettingName = 'Maximum donation amount'
+          this.selectedSettingSubText = 'Sets max donation amount in EUR'
+          this.selectedSettingValue = this.donation_maximum
+          this.settingsDialog = true
           break
         case 'donation_minimum':
           this.selectedSetting = 'donation_minimum'

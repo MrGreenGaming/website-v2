@@ -78,7 +78,7 @@
                       label="Amount"
                       :value="donationData.amount"
                       :mask="'####'"
-                      :rules="[rules.minimumAmount]"
+                      :rules="[rules.minimumAmount, rules.maximumAmount]"
                       prefix="€"
                       @input="onDonationInput()"
                       @focus="donationData.amount = ''"
@@ -100,7 +100,7 @@
               <v-layout justify-center wrap>
                 <v-btn
                   color="primary"
-                  :disabled="parseInt(donationData.amount) < parseInt(donationMinAmount)"
+                  :disabled="parseInt(donationData.amount) < parseInt(donationMinAmount) || parseInt(donationData.amount) > parseInt(donationMaxAmount)"
                   large
                   @click="donationStepper('onAmountSet')"
                 >
@@ -211,6 +211,7 @@ export default {
         }
       },
       donationMinAmount: 2,
+      donationMaxAmount: 500,
       donationData: {
         type: false,
         amount: '0'
@@ -223,7 +224,10 @@ export default {
       rules: {
         minimumAmount: value =>
           parseInt(value, 10) >= parseInt(this.donationMinAmount, 10) ||
-					'Minimum donation amount: €' + this.donationMinAmount
+          'Minimum donation amount: €' + this.donationMinAmount,
+        maximumAmount: value =>
+          parseInt(value, 10) <= parseInt(this.donationMaxAmount, 10) ||
+					'Maximum donation amount: €' + this.donationMaxAmount
       }
     }
   },
@@ -363,15 +367,17 @@ export default {
         console.log('Failed getting donation data', err)
         return
       }
-
+      // console.log(theData)
       if (
         theData.gc &&
 				theData.vip &&
 				theData.vip_gc &&
 				theData.discount &&
-				theData.minimum
+        theData.minimum &&
+        theData.maximum
       ) {
         this.donationMinAmount = theData.minimum
+        this.donationMaxAmount = theData.maximum
         this.donationPrice = {
           greencoins: theData.gc,
           vip: {

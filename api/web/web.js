@@ -156,7 +156,7 @@ app.get('/getdonationpricing', (rec, res, next) => {
   settings.vip_gc = SettingsManager.getSetting('donation_vip_gc')
   settings.discount = SettingsManager.getSetting('donation_discount')
   settings.minimum = SettingsManager.getSetting('donation_minimum')
-
+  settings.maximum = SettingsManager.getSetting('donation_maximum')
   res.json(settings)
 })
 
