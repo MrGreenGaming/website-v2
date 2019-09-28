@@ -15,5 +15,7 @@ export default function ({ route, redirect }) {
       return redirect('https://mrgreengaming.com/forums/')
     case '/viphorns':
       return redirect('/mta/viphorns')
+    case '/discord':
+      return redirect('https://discord.gg/SjbzC9Z')
   }
 }
