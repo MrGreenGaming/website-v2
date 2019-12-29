@@ -59,11 +59,11 @@ app.use('/', async (req, res, next) => {
   next()
 })
 
-app.get('/all', function (req, res) {
+app.post('/all', function (req, res) {
   res.json(connectedMembersManager.getAll())
 })
 
-app.get('/discordmember', function (req, res) {
+app.post('/discordmember', function (req, res) {
   const id = (req.query.id && !isNaN(req.query.id)) ? req.query.id : false
   if (!id) {
     res.status(500)
@@ -85,7 +85,7 @@ app.get('/discordmember', function (req, res) {
   })
 })
 
-app.get('/forummember', function (req, res) {
+app.post('/forummember', function (req, res) {
   const id = (req.query.id && !isNaN(req.query.id)) ? req.query.id : false
   if (!id) {
     res.status(500)
