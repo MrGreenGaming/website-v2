@@ -146,6 +146,7 @@ app.use('/admin', require('./web/admin'))
 app.use('/account', require('./account/account'))
 app.use('/users', require('./account/users'))
 app.use('/custompaintjobs', require('./mta/customPaintjobs'))
+app.use('/discordconnected', require('./discord/connectedMembers'))
 
 // Catch all for 404 error
 app.all('*', (req, res) => {

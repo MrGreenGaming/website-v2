@@ -73,36 +73,33 @@ function initDB() {
     resolve()
   })
 }
-function initModules() {
-  return new Promise(async (resolve, reject) => {
-    const Leaderboards = require('../server/base/leaderboards')
-    const SettingsManager = require('../server/base/settings')
-    const GameserversManager = require('../server/mta/gameserversManager')
-    const VipManager = require('../server/base/vipManager')
-    const DonationManager = require('../server/base/donationsManager')
-    const MapUploads = require('../server/mta/mapUploads')
-    // Set globals
-    global.Utils = require('../utils/utils')
-    global.ApiApps = require('../server/base/apiApps')
-    global.Users = require('../server/base/users')
-    global.axios = require('axios')
-    try {
-      await initCaching()
-      await ApiApps.load()
-      await SettingsManager.initialize()
-      await VipManager.initialize()
-      await DonationManager.initialize()
-      // await Games.load()
-      Leaderboards.initialize()
-      await GameserversManager.initialize()
-      await MapUploads.init()
-    } catch (err) {
-      console.error('initModules ERROR: ', err)
-      reject(err)
-      return
-    }
-    resolve()
-  })
+async function initModules() {
+  const Leaderboards = require('../server/base/leaderboards')
+  const SettingsManager = require('../server/base/settings')
+  const GameserversManager = require('../server/mta/gameserversManager')
+  const VipManager = require('../server/base/vipManager')
+  const DonationManager = require('../server/base/donationsManager')
+  const MapUploads = require('../server/mta/mapUploads')
+  const ConnectedDiscordMembersManager = require('../server/discord/connectedDiscordMembersManager')
+  // Set globals
+  global.Utils = require('../utils/utils')
+  global.ApiApps = require('../server/base/apiApps')
+  global.Users = require('../server/base/users')
+  global.axios = require('axios')
+  try {
+    initCaching()
+    await ApiApps.load()
+    await SettingsManager.initialize()
+    await VipManager.initialize()
+    await DonationManager.initialize()
+    // await Games.load()
+    Leaderboards.initialize()
+    await GameserversManager.initialize()
+    await MapUploads.init()
+    await ConnectedDiscordMembersManager.initialize()
+  } catch (err) {
+    console.error('initModules ERROR: ', err)
+  }
 }
 function initCaching() {
   const NodeCache = require('node-cache')
