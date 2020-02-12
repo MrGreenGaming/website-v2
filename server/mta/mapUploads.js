@@ -50,13 +50,10 @@ let ftpInfo = {
 }
 
 class mapUploads {
-  static init() {
-    return new Promise(async (resolve, reject) => {
-      // Empty temporary map uploads folder on startup
-      await fse.emptyDir('clientUploads/mapUploads').catch((err) => {
-        console.error('mapUploads empty error: ', err)
-      })
-      resolve()
+  static async init() {
+    // Empty temporary map uploads folder on startup
+    await fse.emptyDir('clientUploads/mapUploads').catch((err) => {
+      console.error('mapUploads empty error: ', err)
     })
   }
 
@@ -83,7 +80,7 @@ class mapUploads {
 
   static async handleMapUpload(theFile, theName, uploadUserName, uploadUserForumId, comment) {
     // Get updated info
-    await mapUploads.getUpdatedConfig()
+    mapUploads.getUpdatedConfig()
     // Check zip
     const mapInfo = await this.checkZip(theFile.path, theName).catch((err) => {
       // console.log(err);
@@ -110,135 +107,119 @@ class mapUploads {
     })
     return true
   }
-  static uploadMap(file, path, originalName, mode, unpackDest, uploadUserName, uploadUserForumId, comment) {
-    return new Promise(async (resolve, reject) => {
-      // Check what server we need to upload to
-      let serverInfo
-      if (mode === 'race') {
-        serverInfo = gameServerInfo.Race
-      } else {
-        serverInfo = gameServerInfo.RaceMix
-      }
 
-      // Map path
-      const nameNoExtension = originalName.replace('.zip', '')
-      const zipPath = serverInfo.folder + 'zips/'
-      const folderPath =
+  static async uploadMap(file, path, originalName, mode, unpackDest, uploadUserName, uploadUserForumId, comment) {
+    // Check what server we need to upload to
+    let serverInfo
+    if (mode === 'race') {
+      serverInfo = gameServerInfo.Race
+    } else {
+      serverInfo = gameServerInfo.RaceMix
+    }
+
+    // Map path
+    const nameNoExtension = originalName.replace('.zip', '')
+    const zipPath = serverInfo.folder + 'zips/'
+    const folderPath =
 				serverInfo.folder + nameNoExtension + '_newupload'
 
-      // Check if FTP has connection
-      const ftp = new BasicFtp.Client()
-      // Set to verbose for better debugging
-      // ftp.ftp.verbose = true
+    // Check if FTP has connection
+    const ftp = new BasicFtp.Client()
+    // Set to verbose for better debugging
+    // ftp.ftp.verbose = true
 
-      const removeUploadedFiles = async () => {
-        await ftp.access(ftpInfo).catch((err) => {
-          console.log(err)
-        })
-        await ftp.remove(zipPath + originalName, true).catch((err) => {
-          console.log(err)
-        })
-        await ftp.removeDir(folderPath).catch((err) => {
-          console.log(err)
-        })
-        await ftp.close()
-      }
-
-      try {
-        await ftp.access(ftpInfo)
-        await ftp.ensureDir(zipPath)
-      } catch (err) {
-        console.error(err)
-        reject(
-          Error(
-            'An error has occured while handling FTP. (' + err.message + ')'
-          )
-        )
-        return
-      }
-      let extractionErr
-      await mapUploads.unpackZip(path, unpackDest).catch((err) => {
+    const removeUploadedFiles = async () => {
+      await ftp.access(ftpInfo).catch((err) => {
         console.log(err)
-        extractionErr = err
       })
-      if (extractionErr) {
-        reject(Error('A problem has occured while unpacking zip file.'))
-        return
-      }
-      // Upload unpacked zip folder to ftp
-      // Upload zip to zip folder
-      try {
-        await ftp.ensureDir(folderPath)
-        await ftp.uploadDir(unpackDest)
-        const zipReadStream = fs.createReadStream(path)
-        await ftp.upload(zipReadStream, zipPath + originalName)
-      } catch (err) {
-        console.error(err)
-        await removeUploadedFiles()
-        reject(
-          Error(
-            'A problem has occured while uploading unpacked zip file to ftp. (' +
-							err.message +
-							')'
-          )
-        )
-        return
-      }
+      await ftp.remove(zipPath + originalName, true).catch((err) => {
+        console.log(err)
+      })
+      await ftp.removeDir(folderPath).catch((err) => {
+        console.log(err)
+      })
+      await ftp.close()
+    }
 
-      // Notify mta server that new map is uploaded
-      const serverConnection = new MTA(serverInfo.host, serverInfo.port, '', '')
-      // const serverConnection = new MTA('5.2.65.7', serverInfo.port, '', '') // Dev server
+    try {
+      await ftp.access(ftpInfo)
+      await ftp.ensureDir(zipPath)
+    } catch (err) {
+      console.error(err)
+      throw new
+      Error(
+        `An error has occured while handling FTP. (${err.message})`
+      )
+    }
+    let extractionErr
+    await mapUploads.unpackZip(path, unpackDest).catch((err) => {
+      console.log(err)
+      extractionErr = err
+    })
+    if (extractionErr) {
+      throw new Error('A problem has occured while unpacking zip file.')
+    }
+    // Upload unpacked zip folder to ftp
+    // Upload zip to zip folder
+    try {
+      await ftp.ensureDir(folderPath)
+      await ftp.uploadDir(unpackDest)
+      const zipReadStream = fs.createReadStream(path)
+      await ftp.upload(zipReadStream, zipPath + originalName)
+    } catch (err) {
+      console.error(err)
+      await removeUploadedFiles()
+      throw new
+      Error(
+        `A problem has occured while uploading unpacked zip file to ftp. (${err.message})`
+      )
+    }
 
-      let returnedMtaValue
-      try {
-        serverConnection.call('maptools', 'informNewMap')
-        await delay(2000) // Wait for MTA server to refresh it's resources
-        returnedMtaValue = await serverConnection.call('maptools', 'newMap', nameNoExtension, uploadUserForumId, uploadUserName, comment)
-        if (typeof returnedMtaValue === 'string' && returnedMtaValue.indexOf('MTA: Could not load ') === 0) {
-          // Retry x times
-          for (let i = 0; i < 5; i++) {
-            await delay(2000) // Wait for MTA server to refresh it's resources
-            returnedMtaValue = await serverConnection.call('maptools', 'newMap', nameNoExtension, uploadUserForumId, uploadUserName, comment)
-            // Check if 'could not load', if not then break
-            if (typeof returnedMtaValue === 'string' && returnedMtaValue.indexOf('MTA: Could not load ') === 0) {
-              console.log('mapupload retry: ' + i + 1)
-            } else {
-              break
-            }
+    // Notify mta server that new map is uploaded
+    const serverConnection = new MTA(serverInfo.host, serverInfo.port, '', '')
+    // const serverConnection = new MTA('5.2.65.7', serverInfo.port, '', '') // Dev server
+
+    let returnedMtaValue
+    try {
+      serverConnection.call('maptools', 'informNewMap')
+      await delay(2000) // Wait for MTA server to refresh it's resources
+      returnedMtaValue = await serverConnection.call('maptools', 'newMap', nameNoExtension, uploadUserForumId, uploadUserName, comment)
+      if (typeof returnedMtaValue === 'string' && returnedMtaValue.indexOf('MTA: Could not load ') === 0) {
+        // Retry x times
+        for (let i = 0; i < 5; i++) {
+          await delay(2000) // Wait for MTA server to refresh it's resources
+          returnedMtaValue = await serverConnection.call('maptools', 'newMap', nameNoExtension, uploadUserForumId, uploadUserName, comment)
+          // Check if 'could not load', if not then break
+          if (typeof returnedMtaValue === 'string' && returnedMtaValue.indexOf('MTA: Could not load ') === 0) {
+            console.log('mapupload retry: ' + i + 1)
+          } else {
+            break
           }
         }
-      } catch (err) {
-        await removeUploadedFiles()
-        reject(
-          Error(
-            'Could not connect to MTA. (' +
-							err.message || '' +
-							')'
-          )
-        )
-        return
       }
-      // When maptools resource is not running, the mta sdk will return 'e'. Why not an error? No idea.
-      // When successfull, will return object [true, 'New' or 'Update']
-      let isUpdate
-      if (typeof returnedMtaValue === 'object' && returnedMtaValue[0] === true) {
-        // Success!
-        isUpdate = returnedMtaValue[1]
+    } catch (err) {
+      await removeUploadedFiles()
+      throw new
+      Error(`Could not connect to MTA. (${err.message || ''})`)
+    }
+    // When maptools resource is not running, the mta sdk will return 'e'. Why not an error? No idea.
+    // When successfull, will return object [true, 'New' or 'Update']
+    let isUpdate
+    if (typeof returnedMtaValue === 'object' && returnedMtaValue[0] === true) {
+      // Success!
+      isUpdate = returnedMtaValue[1]
+    } else {
+      // Fail, lest find out why
+      await removeUploadedFiles()
+      if (returnedMtaValue === 'e') {
+        throw new Error('Resource "maptools" on MTA server is not running, please inform a server admin.')
+      } else if (typeof returnedMtaValue === 'string') {
+        throw new Error('MTA Server error: ' + returnedMtaValue)
       } else {
-        // Fail, lest find out why
-        await removeUploadedFiles()
-        if (returnedMtaValue === 'e') {
-          reject(Error('Resource "maptools" on MTA server is not running, please inform a server admin.'))
-        } else if (typeof returnedMtaValue === 'string') {
-          reject(Error('MTA Server error: ' + returnedMtaValue))
-        } else {
-          reject(Error('MTA Server error: an error occured, please contact a developer.'))
-        }
-        return
+        throw new Error('MTA Server error: an error occured, please contact a developer.')
       }
-
-      resolve(isUpdate)
-    })
+    }
+    return isUpdate
   }
 
   static checkZip(path, originalName) {
@@ -323,6 +304,9 @@ class mapUploads {
       let raceModeInfoNode = false
       let raceModeSettingNode = false
 
+      let isCoreMarkersIncludedInMeta = false
+      let isNFSArrowIncludedInMeta = false
+
       const metaParser = new xml2js.Parser()
       // Parse meta.xml
       let parsedMeta
@@ -375,10 +359,11 @@ class mapUploads {
           }
         } else if (
           nodeName === 'script' ||
-						nodeName === 'map' ||
-						nodeName === 'file' ||
-						nodeName === 'config' ||
-						nodeName === 'html'
+          nodeName === 'map' ||
+          nodeName === 'file' ||
+          nodeName === 'config' ||
+          nodeName === 'html' ||
+          nodeName === 'include'
         ) {
           // Iterate through node
           for (const nodeChildIndex in parsedMeta.meta[nodeName]) {
@@ -399,6 +384,16 @@ class mapUploads {
               } else {
                 returnErr('Missing .map file src in meta.xml.')
                 return
+              }
+            }
+
+            // Check included coremarkers
+            if (nodeName === 'include') {
+              if (childNode.resource === 'coremarkers') {
+                isCoreMarkersIncludedInMeta = true
+              }
+              if (childNode.resource === 'nfsarrows') {
+                isNFSArrowIncludedInMeta = true
               }
             }
 
@@ -485,6 +480,23 @@ class mapUploads {
         )
         return
       }
+
+      // Check included CoreMarkers in .map
+      if (parsedMap.map.coremarker && !isCoreMarkersIncludedInMeta) {
+        returnErr(
+          'You used CoreMarkers in .map file but didn\'t included in meta.xml'
+        )
+        return
+      }
+
+      // Check included NFS arrows in .map
+      if (parsedMap.map.nfs_arrow && !isNFSArrowIncludedInMeta) {
+        returnErr(
+          'You used NFS arrows in .map file but didn\'t included in meta.xml'
+        )
+        return
+      }
+
       // Resource parsing is ok, do mode checks now
 
       switch (namePrefix) {
@@ -842,90 +854,55 @@ class mapUploads {
 
   // Map Log
   // TODO: Implement server side pagination
-  static getMapLog(page) {
-    return new Promise(async (resolve, reject) => {
-      // const perPage = 500
-
-      // if (page < 1) {
-      //   page = 1
-      // }
-      // const offset = page * perPage
-      // let mapLog
-      // let totalAmount
-      // const query =
-      // 	'SELECT * FROM `uploaded_maps` ORDER BY `uploadid` DESC LIMIT ? OFFSET ?'
-      // const totalQuery = 'SELECT COUNT(*) AS total FROM `uploaded_maps`'
-      // try {
-      //   mapLog = await mtaServersDb.query(query, [perPage, offset])
-      //   mapLog = JSON.parse(JSON.stringify(mapLog))
-
-      //   totalAmount = await mtaServersDb.query(totalQuery)
-      //   totalAmount = JSON.parse(JSON.stringify(totalAmount))
-      //   totalAmount = totalAmount[0].total
-      // } catch (err) {
-      //   reject(err.message || err)
-      //   return
-      // }
-
-      // resolve({ items: mapLog, total: totalAmount })
-
-      // Return last 1000, no pagination
-      let mapLog
-      const query =
+  static async getMapLog(page) {
+    // Return last 1000, no pagination
+    let mapLog
+    const query =
 				'SELECT * FROM `uploaded_maps` ORDER BY `uploadid` DESC LIMIT ?'
-      try {
-        mapLog = await mtaServersDb.query(query, 1000)
-        mapLog = JSON.parse(JSON.stringify(mapLog))
-      } catch (err) {
-        reject(err.message || err)
-        return
-      }
-      resolve(mapLog)
-    })
+    try {
+      mapLog = await mtaServersDb.query(query, 1000)
+      mapLog = JSON.parse(JSON.stringify(mapLog))
+    } catch (err) {
+      throw new Error(err.message || err)
+    }
+    return mapLog
   }
-  static unpackZip(zipPath, extractionPath) {
-    return new Promise(async (resolve, reject) => {
-      //
-      const zip = new AdmZip(zipPath)
-      let extractionErr
-      await zip.extractAllToAsync(extractionPath, true, async (err) => {
-        extractionErr = err
-        if (extractionErr) {
-          reject(extractionErr)
-        } else {
-          const folderExists = await fse.pathExists(extractionPath)
-          if (folderExists) {
-            resolve()
-          } else {
-            reject(Error('Could not unpack zip file'))
-          }
-        }
-      })
-    })
-  }
-  static searchMapLog(searchQuery) {
-    return new Promise(async (resolve, reject) => {
-      if (typeof searchQuery !== 'string') {
-        reject(Error('Invalid search query.'))
-        return
-      }
-      searchQuery = '%' + searchQuery + '%'
-      // Do search stuff
-      const query =
-				'SELECT * FROM `uploaded_maps` WHERE `resname` LIKE ? ORDER BY `uploadid` DESC LIMIT 100'
-      let results
-      try {
-        // String already santized
-        results = await mtaServersDb.query(query, searchQuery)
-        results = JSON.parse(JSON.stringify(results))
-      } catch (err) {
-        console.log(err)
-        reject(err || 'Problem searching trough database.')
-        return
-      }
 
-      resolve(results)
+  static async unpackZip(zipPath, extractionPath) {
+    const zip = new AdmZip(zipPath)
+    let extractionErr
+    await zip.extractAllToAsync(extractionPath, true, async (err) => {
+      extractionErr = err
+      if (extractionErr) {
+        throw new Error(extractionErr.message)
+      } else {
+        const folderExists = await fse.pathExists(extractionPath)
+        if (!folderExists) {
+          throw new Error('Could not unpack zip file')
+        }
+      }
     })
+  }
+
+  static async searchMapLog(searchQuery) {
+    if (typeof searchQuery !== 'string') {
+      throw new Error('Invalid search query.')
+    }
+    searchQuery = '%' + searchQuery + '%'
+    // Do search stuff
+    const query =
+				'SELECT * FROM `uploaded_maps` WHERE `resname` LIKE ? ORDER BY `uploadid` DESC LIMIT 100'
+    let results
+    try {
+      // String already santized
+      results = await mtaServersDb.query(query, searchQuery)
+      results = JSON.parse(JSON.stringify(results))
+    } catch (err) {
+      console.log(err)
+      throw new Error(err || 'Problem searching through database.')
+    }
+
+    return results
   }
 }
 
