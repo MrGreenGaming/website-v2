@@ -1,6 +1,5 @@
-// const fs = require('fs')
-
 const fs = require('fs')
+const util = require('util')
 const fse = require('fs-extra')
 const xml2js = require('xml2js')
 const BasicFtp = require('basic-ftp')
@@ -138,7 +137,7 @@ class mapUploads {
       await ftp.removeDir(folderPath).catch((err) => {
         console.log(err)
       })
-      await ftp.close()
+      ftp.close()
     }
 
     try {
@@ -157,7 +156,7 @@ class mapUploads {
       extractionErr = err
     })
     if (extractionErr) {
-      throw new Error('A problem has occured while unpacking zip file.')
+      throw new Error(`A problem has occured while unpacking zip file: ${extractionErr.message}`)
     }
     // Upload unpacked zip folder to ftp
     // Upload zip to zip folder
@@ -876,18 +875,8 @@ class mapUploads {
 
   static async unpackZip(zipPath, extractionPath) {
     const zip = new AdmZip(zipPath)
-    let extractionErr
-    await zip.extractAllToAsync(extractionPath, true, async (err) => {
-      extractionErr = err
-      if (extractionErr) {
-        throw new Error(extractionErr.message)
-      } else {
-        const folderExists = await fse.pathExists(extractionPath)
-        if (!folderExists) {
-          throw new Error('Could not unpack zip file')
-        }
-      }
-    })
+    const extract = util.promisify(zip.extractAllToAsync)
+    await extract(extractionPath, true)
   }
 
   static async searchMapLog(searchQuery) {
