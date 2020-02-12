@@ -389,12 +389,18 @@ class mapUploads {
 
             // Check included coremarkers
             if (nodeName === 'include') {
+              if (nodeName === 'include' && (!childNode.resource || childNode.resource === '')) {
+                returnErr('Missing resource property in include tag in meta.xml.')
+                return
+              }
+
               if (childNode.resource === 'coremarkers') {
                 isCoreMarkersIncludedInMeta = true
               }
               if (childNode.resource === 'nfsarrows') {
                 isNFSArrowIncludedInMeta = true
               }
+              continue
             }
 
             // Check source
