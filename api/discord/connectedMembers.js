@@ -59,11 +59,21 @@ app.use('/', async (req, res, next) => {
   next()
 })
 
-app.post('/all', function (req, res) {
-  res.json(connectedMembersManager.getAll())
+app.post('/all', async function (req, res) {
+  try {
+    const returnVal = await connectedMembersManager.getAll()
+    res.json(returnVal)
+  } catch (err) {
+    console.error(err)
+    res.status(500)
+    res.json({
+      error: 1,
+      errorMessage: `Error trying to fetch all: ${err.message}`
+    })
+  }
 })
 
-app.post('/discordmember', function (req, res) {
+app.post('/discordmember', async function (req, res) {
   const id = (req.query.id && !isNaN(req.query.id)) ? req.query.id : false
   if (!id) {
     res.status(500)
@@ -73,19 +83,28 @@ app.post('/discordmember', function (req, res) {
     })
     return
   }
-  const returnVal = connectedMembersManager.getMemberConnectedByDiscordID(id)
-  if (returnVal) {
-    res.json(returnVal)
-    return
+  try {
+    const returnVal = await connectedMembersManager.getMemberConnectedByDiscordID(id)
+    if (returnVal) {
+      res.json(returnVal)
+      return
+    }
+    res.status(500)
+    res.json({
+      error: 1,
+      errorMessage: 'Connected member not found'
+    })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500)
+    res.json({
+      error: 2,
+      errorMessage: 'Problem fetching forum member'
+    })
   }
-  res.status(500)
-  res.json({
-    error: 1,
-    errorMessage: 'Connected member not found'
-  })
 })
 
-app.post('/forummember', function (req, res) {
+app.post('/forummember', async function (req, res) {
   const id = (req.query.id && !isNaN(req.query.id)) ? req.query.id : false
   if (!id) {
     res.status(500)
@@ -95,14 +114,23 @@ app.post('/forummember', function (req, res) {
     })
     return
   }
-  const returnVal = connectedMembersManager.getMemberConnectedByForumID(id)
-  if (returnVal) {
-    res.json(returnVal)
-    return
+  try {
+    const returnVal = await connectedMembersManager.getMemberConnectedByForumID(id)
+    if (returnVal) {
+      res.json(returnVal)
+      return
+    }
+    res.status(500)
+    res.json({
+      error: 1,
+      errorMessage: 'Connected member not found'
+    })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500)
+    res.json({
+      error: 2,
+      errorMessage: 'Problem fetching forum member'
+    })
   }
-  res.status(500)
-  res.json({
-    error: 1,
-    errorMessage: 'Connected member not found'
-  })
 })

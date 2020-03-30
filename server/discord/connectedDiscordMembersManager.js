@@ -1,9 +1,11 @@
 const Users = require('../base/users')
-const VipManager = require('../base/vipManager')
+const leaderBoards = require('../../server/base/leaderboards')
+const VipManager = require('../../server/base/vipManager')
+
 let ipbLoginID
 let connectedMembersByDiscordID = new Map()
 let connectedMembersByForumID = new Map()
-const refreshTime = 10 // in minutes
+const refreshTime = 5 // in minutes
 
 class CustomDiscordMembersManager {
   static async initialize() {
@@ -34,44 +36,92 @@ class CustomDiscordMembersManager {
     if (!ipbLoginID) {
       throw new Error('ipbLoginID is not available')
     }
-    const res = await forumsDb.query('SELECT `token_member` as forumID, `token_identifier` as discordID FROM `x_utf_l4g_core_login_links` WHERE `token_login_method` = ? AND `token_linked` = 1', [ipbLoginID])
-
     connectedMembersByDiscordID = new Map()
     connectedMembersByForumID = new Map()
+    const res = await forumsDb.query('SELECT `token_member` as forumID, `token_identifier` as discordID FROM `x_utf_l4g_core_login_links` WHERE `token_login_method` = ? AND `token_linked` = 1', [ipbLoginID])
+
     for (const row of res) {
       if (!row.forumID || !row.discordID) {
         continue
       }
-      const forumMember = await Users.get(row.forumID).catch((e) => { console.error(e) })
-      const vipInfo = VipManager.getVip(row.forumID)
-      const val = {
-        forumID: row.forumID,
-        discordID: row.discordID,
-        greencoins: (forumMember) ? forumMember.coins.balance : 0,
-        vip: vipInfo || false,
-        forumBanned: (forumMember) ? forumMember.banned : false,
-        forumName: (forumMember) ? forumMember.name : ''
 
-      }
-      connectedMembersByDiscordID.set(row.discordID.toString(), val)
-      connectedMembersByForumID.set(row.forumID.toString(), val)
+      connectedMembersByDiscordID.set(row.discordID.toString(), row.forumID.toString())
+      connectedMembersByForumID.set(row.forumID.toString(), row.discordID.toString())
     }
   }
 
-  static getAll() {
+  static async getAll() {
     const allMembers = []
-    for (const row of connectedMembersByDiscordID) {
-      allMembers.push(row[1])
+    for (const row of connectedMembersByForumID) {
+      try {
+        const member = await this.getMemberInfo(row[0], row[1])
+        allMembers.push(member)
+      } catch {
+        continue
+      }
     }
     return allMembers
   }
 
-  static getMemberConnectedByDiscordID(id) {
-    return connectedMembersByDiscordID.has(id.toString()) ? connectedMembersByDiscordID.get(id.toString()) : false
+  static async getMemberConnectedByDiscordID(id) {
+    if (connectedMembersByDiscordID.has(id.toString())) {
+      try {
+        const member = await this.getMemberInfo(connectedMembersByDiscordID.get(id.toString()), id)
+        return member
+      } catch (err) {
+        console.log(err)
+        return false
+      }
+    } else {
+      return false
+    }
   }
 
-  static getMemberConnectedByForumID(id) {
-    return connectedMembersByForumID.has(id.toString()) ? connectedMembersByForumID.get(id.toString()) : false
+  static async getMemberConnectedByForumID(id) {
+    if (connectedMembersByForumID.has(id.toString())) {
+      try {
+        const member = await this.getMemberInfo(id, connectedMembersByForumID.get(id))
+        return member
+      } catch (err) {
+        console.log(err)
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+
+  static async getMemberInfo(forumID, discordID) {
+    const forumMember = await Users.get(parseInt(forumID, 10))
+    const memberInfo = {
+      forumID: forumID,
+      discordID: discordID,
+      name: forumMember.getName(),
+      profileUrl: `https://mrgreengaming.com/forums/profile/${forumMember.getId()}-${forumMember.getName()}`,
+      created: forumMember.getCreated(),
+      coinsBalance: forumMember.getCoins().getBalance(),
+      avatar: forumMember.getAvatar(),
+      avatarThumb: forumMember.getAvatarThumb(),
+      vip: VipManager.getVip(forumMember.getId()),
+      banned: forumMember.getBanned()
+    }
+    // Get leaderboards rankings
+    const memberRanks = {}
+    const leaderBoardsItems = leaderBoards.getItems()
+    for (const category in leaderBoardsItems) {
+      for (const row of leaderBoardsItems[category]) {
+        if (row.forumid === parseInt(forumID, 10)) {
+          memberRanks[category] = {
+            rank: row.rank,
+            points: row.points
+          }
+          break
+        }
+      }
+    }
+    memberInfo.ranks = memberRanks
+
+    return memberInfo
   }
 }
 module.exports = CustomDiscordMembersManager
