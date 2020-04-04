@@ -19,6 +19,7 @@ const allowedFileTypes = [ // All other files within the zip file will throw an 
   'jpg',
   'dds',
   'png',
+  'bmp',
   'gif',
   'html',
   'css',
