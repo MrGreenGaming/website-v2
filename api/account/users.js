@@ -1,5 +1,6 @@
 const express = require('express')
 const app = (module.exports = express())
+const VipManager = require('../../server/base/vipManager')
 
 /**
  * API verification
@@ -212,4 +213,36 @@ app.post('/:userId/coins/submitTransaction', async (req, res) => {
   output.coinsBalance = user.getCoins().getBalance()
 
   res.json(output)
+})
+
+app.post('/:userId/vip/addVip', async (req, res) => {
+  /** @type {User} */
+  const user = req.user
+  const userid = user.getId()
+  const amount = req.body.amount
+
+  if (typeof amount !== 'number' || !amount) {
+    res.json({
+      error: 10,
+      errorMessage: 'Invalid amount'
+    })
+    return
+  }
+
+  // Give vip
+  try {
+    await VipManager.addVip(userid, parseInt(req.body.amount, 10))
+  } catch (error) {
+    res.status(500)
+    res.json({
+      error: 0,
+      errorMessage: `Transaction error: ${error.message || error}`
+    })
+    console.error(error)
+  }
+  res.json({
+    success: true,
+    id: userid,
+    newBalance: VipManager.getVip(userid)
+  })
 })
