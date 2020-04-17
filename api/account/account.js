@@ -65,6 +65,180 @@ app.use('/', async (req, res, next) => {
   next()
 })
 
+app.post('/register', async (req, res) => {
+  // MTA Ingame Registration Serial Field ID: 32
+  let username = req.body.username
+  let password = req.body.password
+  const ipaddress = req.body.ip
+  const email = req.body.email
+  const serial = req.body.serial
+
+  // Password Validation
+  if (
+  	typeof password !== 'string' ||
+  	password.length < 8 ||
+  	password.length > 150
+  ) {
+    res.json({
+      error: 2,
+      errorMessage: 'Invalid Password'
+    })
+    return
+  }
+  password = unescape(password)
+
+  if (!/[a-z]/.test(password)) {
+    res.json({
+      error: 3,
+      errorMessage: 'Password must contain lower case letter'
+    })
+    return
+  } else if (!/[A-Z]/.test(password)) {
+    res.json({
+      error: 3,
+      errorMessage: 'Password must contain upper case letter'
+    })
+    return
+  } else if (!/[^a-zA-Z]/.test(password)) {
+    res.json({
+      error: 4,
+      errorMessage: 'Password must contain number or special character'
+    })
+    return
+  }
+
+  // Username Validation
+  if (
+  	typeof username !== 'string' ||
+  	username.length < 3 ||
+  	username.length > 150
+  ) {
+    res.json({
+      error: 5,
+      errorMessage: 'Invalid Username'
+    })
+    return
+  }
+  username = unescape(username)
+
+  if (/\s/.test(username)) {
+    res.json({
+      error: 6,
+      errorMessage: 'Username can not contain whitespaces'
+    })
+    return
+  } else if (/[^a-zA-Z0-9|_]/.test(username)) {
+    res.json({
+      error: 7,
+      errorMessage: 'Username can only contain numbers, letter and _'
+    })
+    return
+  }
+
+  // Email validation
+  if (typeof email !== 'string' || email.length < 4 || !/@/.test(email)) {
+    res.json({
+      error: 8,
+      errorMessage: 'Email is not valid'
+    })
+    return
+  }
+
+  // IP validation
+  if (typeof ipaddress !== 'string' || !/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
+    res.json({
+      error: 9,
+      errorMessage: 'IP address is not valid'
+    })
+    return
+  }
+
+  const urlEncodedContent = new URLSearchParams()
+  urlEncodedContent.append('name', username)
+  urlEncodedContent.append('email', email)
+  urlEncodedContent.append('password', password)
+  urlEncodedContent.append('group', '3')
+  urlEncodedContent.append('registrationIpAddress', ipaddress)
+  urlEncodedContent.append('validated', '0')
+  if (typeof serial === 'string') {
+    urlEncodedContent.append('customFields[32]', serial)
+  }
+  let createMemberRes
+  try {
+    createMemberRes = await axios.post(`${global.Config.api.forums.apiBaseUrl}members/?key=${global.Config.api.forums.apiKey}`, urlEncodedContent, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  } catch (err) {
+    switch (err.response.data.errorCode) {
+      case '1C292/4':
+        res.json({
+          error: 10,
+          errorMessage: 'The username provided is already in use'
+        })
+        return
+      case '1C292/5':
+        res.json({
+          error: 11,
+          errorMessage: 'The email address provided is already in use'
+        })
+        return
+      default:
+        res.json({
+          error: 12,
+          errorMessage: `Something went wrong. Error: ${err.response.data.errorCode || 'N/A'} - ${err.response.data.errorMessage || 'N/A'}`
+        })
+        return
+    }
+  }
+  if (!createMemberRes.data || !createMemberRes.data.id) {
+    res.json({
+      error: 13,
+      errorMessage: `Something went wrong while registering new member.`
+    })
+    return
+  }
+
+  let user
+  try {
+    user = await Users.get(createMemberRes.data.id)
+  } catch (error) {
+    console.error(error)
+    res.json({
+      error: 14,
+      errorMessage: `User ${createMemberRes.data.id} registered successfully, but could not fetch details.`
+    })
+    return
+  }
+
+  if (!user) {
+    res.json({
+      error: 14,
+      errorMessage: `User ${createMemberRes.data.id} registered successfully, but could not fetch details.`
+    })
+    return
+  }
+
+  res.json({
+    userId: user.getId(),
+    name: user.getName(),
+    emailAddress: undefined, // Deprecated
+    joinDate: user.getCreated(),
+    joinTimestamp: user.getCreated()
+      ? Math.round(user.getCreated().getTime() / 1000)
+      : undefined,
+    coinsBalance: user.getCoins().getBalance(),
+    profile: {
+      photo: user.getAvatar(),
+      photoThumb: user.getAvatarThumb(),
+      title: undefined // Deprecated
+    },
+    vip: VipManager.getVip(user.getId()),
+    banned: user.getBanned()
+  })
+})
+
 app.post('/login', async (req, res) => {
   let username = req.body.user
   let password = req.body.password
