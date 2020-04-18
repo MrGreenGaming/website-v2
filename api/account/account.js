@@ -95,13 +95,13 @@ app.post('/register', async (req, res) => {
     return
   } else if (!/[A-Z]/.test(password)) {
     res.json({
-      error: 3,
+      error: 4,
       errorMessage: 'Password must contain upper case letter'
     })
     return
   } else if (!/[^a-zA-Z]/.test(password)) {
     res.json({
-      error: 4,
+      error: 5,
       errorMessage: 'Password must contain number or special character'
     })
     return
@@ -114,7 +114,7 @@ app.post('/register', async (req, res) => {
   	username.length > 150
   ) {
     res.json({
-      error: 5,
+      error: 6,
       errorMessage: 'Invalid Username'
     })
     return
@@ -123,13 +123,13 @@ app.post('/register', async (req, res) => {
 
   if (/\s/.test(username)) {
     res.json({
-      error: 6,
+      error: 7,
       errorMessage: 'Username can not contain whitespaces'
     })
     return
   } else if (/[^a-zA-Z0-9|_]/.test(username)) {
     res.json({
-      error: 7,
+      error: 8,
       errorMessage: 'Username can only contain numbers, letter and _'
     })
     return
@@ -138,7 +138,7 @@ app.post('/register', async (req, res) => {
   // Email validation
   if (typeof email !== 'string' || email.length < 4 || !/@/.test(email)) {
     res.json({
-      error: 8,
+      error: 9,
       errorMessage: 'Email is not valid'
     })
     return
@@ -147,7 +147,7 @@ app.post('/register', async (req, res) => {
   // IP validation
   if (typeof ipaddress !== 'string' || !/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
     res.json({
-      error: 9,
+      error: 10,
       errorMessage: 'IP address is not valid'
     })
     return
@@ -174,19 +174,19 @@ app.post('/register', async (req, res) => {
     switch (err.response.data.errorCode) {
       case '1C292/4':
         res.json({
-          error: 10,
+          error: 11,
           errorMessage: 'The username provided is already in use'
         })
         return
       case '1C292/5':
         res.json({
-          error: 11,
+          error: 12,
           errorMessage: 'The email address provided is already in use'
         })
         return
       default:
         res.json({
-          error: 12,
+          error: 13,
           errorMessage: `Something went wrong. Error: ${err.response.data.errorCode || 'N/A'} - ${err.response.data.errorMessage || 'N/A'}`
         })
         return
@@ -194,7 +194,7 @@ app.post('/register', async (req, res) => {
   }
   if (!createMemberRes.data || !createMemberRes.data.id) {
     res.json({
-      error: 13,
+      error: 14,
       errorMessage: `Something went wrong while registering new member.`
     })
     return
@@ -206,7 +206,7 @@ app.post('/register', async (req, res) => {
   } catch (error) {
     console.error(error)
     res.json({
-      error: 14,
+      error: 15,
       errorMessage: `User ${createMemberRes.data.id} registered successfully, but could not fetch details.`
     })
     return
@@ -214,7 +214,7 @@ app.post('/register', async (req, res) => {
 
   if (!user) {
     res.json({
-      error: 14,
+      error: 16,
       errorMessage: `User ${createMemberRes.data.id} registered successfully, but could not fetch details.`
     })
     return
