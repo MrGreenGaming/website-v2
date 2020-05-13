@@ -18,7 +18,7 @@
 
           <v-divider class="mb-3" />
           <v-flex v-if="!isEnabled">
-            <h2>Coming soon!</h2>
+            <h2>Map upload is temporarily disabled</h2>
           </v-flex>
           <v-flex v-if="$auth.loggedIn && isEnabled">
             <v-card flat>
@@ -280,7 +280,7 @@ export default {
       isDoneUploading: false,
       uploadingProgress: {},
       returnedServerMessages: [],
-      isEnabled: true
+      isEnabled: false
     }
   },
   computed: {},

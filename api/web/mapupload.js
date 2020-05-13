@@ -43,8 +43,13 @@ const upload = multer({
   }
 })
 
-app.post('/upload', upload.single('file'), async (req, res) => {
-  const deny = (errorCode, errorMessage) => {
+app.post('/upload', upload.single('file'), (req, res) => {
+  // Temp disable map upload
+  return req.status(422).json({
+    error: 1,
+    errorMessage: 'Map Upload is temporarily disabled'
+  })
+  /* const deny = (errorCode, errorMessage) => {
     res.status(422).json({
       error: errorCode || 0,
       errorMessage: errorMessage || ''
@@ -136,7 +141,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   } else {
     res.json(uploadType)
     // res.json({ files: req.files })
-  }
+  } */
 })
 
 app.use(function (err, req, res, next) {
