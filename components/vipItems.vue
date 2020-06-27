@@ -73,8 +73,7 @@ export default {
         },
         {
           name: 'Police siren lights',
-          description: 'Add police siren lights to your vehicles',
-          comingsoon: true
+          description: 'Add police siren lights to your vehicles'
         }
       ]
     }
