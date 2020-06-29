@@ -85,3 +85,5 @@ sw.*
 
 #Custom
 config/env.json
+config/keys/*
+!config/keys/README.md

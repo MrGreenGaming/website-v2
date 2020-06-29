@@ -2,12 +2,11 @@ const fs = require('fs')
 const util = require('util')
 const fse = require('fs-extra')
 const xml2js = require('xml2js')
-const BasicFtp = require('basic-ftp')
 const MTA = require('mtasa').Client
 const delay = require('delay')
 const AdmZip = require('adm-zip')
+const SftpClient = require('ssh2-sftp-client')
 
-// These things should be moven to json config
 const validGameModePrefixes = ['nts', 'race', 'dl', 'rtf', 'dd', 'ctf', 'sh']
 const allowedFileTypes = [ // All other files within the zip file will throw an error
   'xml',
@@ -43,11 +42,6 @@ let gameServerInfo = {
   //   folder: ''
   // }
 }
-let ftpInfo = {
-  // host: '',
-  // user: '',
-  // password: ''
-}
 
 class mapUploads {
   static async init() {
@@ -62,18 +56,23 @@ class mapUploads {
       Race: {
         host: global.Config.mapupload.Race.host,
         port: global.Config.mapupload.Race.port,
-        folder: global.Config.mapupload.Race.folder
+        ssh: {
+          user: global.Config.mapupload.Race.ssh.user,
+          privateKey: fse.readFileSync(`././config/keys/${global.Config.mapupload.Race.ssh.keyFileName}`),
+          host: global.Config.mapupload.Race.ssh.host,
+          port: global.Config.mapupload.Race.ssh.port
+        }
       },
       RaceMix: {
         host: global.Config.mapupload.RaceMix.host,
         port: global.Config.mapupload.RaceMix.port,
-        folder: global.Config.mapupload.RaceMix.folder
+        ssh: {
+          user: global.Config.mapupload.RaceMix.ssh.user,
+          privateKey: fse.readFileSync(`././config/keys/${global.Config.mapupload.RaceMix.ssh.keyFileName}`),
+          host: global.Config.mapupload.RaceMix.ssh.host,
+          port: global.Config.mapupload.RaceMix.ssh.port
+        }
       }
-    }
-    ftpInfo = {
-      host: global.Config.ftp.host,
-      user: global.Config.ftp.user,
-      password: global.Config.ftp.password
     }
     return true
   }
@@ -118,32 +117,32 @@ class mapUploads {
     }
 
     // Map path
+    const absolutePath = `/home/${serverInfo.ssh.user}/repo/resources/[maps]/[uploadedmaps]/`
     const nameNoExtension = originalName.replace('.zip', '')
-    const zipPath = serverInfo.folder + 'zips/'
+    const zipPath = absolutePath + 'zips/'
     const folderPath =
-				serverInfo.folder + nameNoExtension + '_newupload'
+    absolutePath + nameNoExtension + '_newupload'
 
     // Check if FTP has connection
-    const ftp = new BasicFtp.Client()
-    // Set to verbose for better debugging
-    // ftp.ftp.verbose = true
+    const sftp = new SftpClient()
+    await sftp.connect(serverInfo.ssh)
 
     const removeUploadedFiles = async () => {
-      await ftp.access(ftpInfo).catch((err) => {
+      const zipExists = await sftp.exists(zipPath + originalName)
+      if (zipExists) {
+        await sftp.delete(zipPath + originalName, true).catch((err) => {
+          console.log(err)
+        })
+      }
+
+      await sftp.rmdir(folderPath, true).catch((err) => {
         console.log(err)
       })
-      await ftp.remove(zipPath + originalName, true).catch((err) => {
-        console.log(err)
-      })
-      await ftp.removeDir(folderPath).catch((err) => {
-        console.log(err)
-      })
-      ftp.close()
+      await sftp.end()
     }
 
     try {
-      await ftp.access(ftpInfo)
-      await ftp.ensureDir(zipPath)
+      await sftp.mkdir(zipPath, true)
     } catch (err) {
       console.error(err)
       throw new
@@ -162,10 +161,10 @@ class mapUploads {
     // Upload unpacked zip folder to ftp
     // Upload zip to zip folder
     try {
-      await ftp.ensureDir(folderPath)
-      await ftp.uploadDir(unpackDest)
+      await sftp.uploadDir(unpackDest, folderPath)
       const zipReadStream = fs.createReadStream(path)
-      await ftp.upload(zipReadStream, zipPath + originalName)
+      await sftp.put(zipReadStream, zipPath + originalName)
+      await sftp.end()
     } catch (err) {
       console.error(err)
       await removeUploadedFiles()

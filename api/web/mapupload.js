@@ -1,6 +1,5 @@
 const path = require('path')
 const fse = require('fs-extra')
-// const axios = require('axios')
 const express = require('express')
 const app = (module.exports = express())
 const multer = require('multer')
@@ -43,13 +42,9 @@ const upload = multer({
   }
 })
 
-app.post('/upload', upload.single('file'), (req, res) => {
-  // Temp disable map upload
-  return req.status(422).json({
-    error: 1,
-    errorMessage: 'Map Upload is temporarily disabled'
-  })
-  /* const deny = (errorCode, errorMessage) => {
+app.post('/upload', upload.single('file'), async (req, res) => {
+  // Temp disable map uploa
+  const deny = (errorCode, errorMessage) => {
     res.status(422).json({
       error: errorCode || 0,
       errorMessage: errorMessage || ''
@@ -141,7 +136,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
   } else {
     res.json(uploadType)
     // res.json({ files: req.files })
-  } */
+  }
 })
 
 app.use(function (err, req, res, next) {
@@ -265,7 +260,7 @@ app.post('/notifymapaction', async (req, res) => {
     messageTitle = messageTitle + 'declined'
     const messageBody = `<h1>Your uploaded map has been declined</h1>
     Your uploaded map <b>${mapname} (${resname})</b> has been declined by <b>${adminName}</b> with the reason <b>"${reason}"</b>.<br>
-    
+
     If you have any questions or problems, please contact one of our map managers.<br><br>
     <sub>This is an automated message. Please do not reply</sub>`
     await ForumMessages.sendMessage(forumid, messageTitle, messageBody).catch((err) => {
@@ -276,7 +271,7 @@ app.post('/notifymapaction', async (req, res) => {
     messageTitle = messageTitle + 'deleted'
     const messageBody = `<h1>Your uploaded map has been deleted</h1>
     Your uploaded map <b>${mapname} (${resname})</b> has been deleted by <b>${adminName}</b> with the reason <b>"${reason}"</b>.<br>
-    
+
     If you have any questions or problems, please contact one of our map managers.<br><br>
     <sub>This is an automated message. Please do not reply</sub>`
     await ForumMessages.sendMessage(forumid, messageTitle, messageBody).catch((err) => {
@@ -287,7 +282,7 @@ app.post('/notifymapaction', async (req, res) => {
     messageTitle = messageTitle + 'deleted'
     const messageBody = `<h1>Your uploaded map has been restored</h1>
     Your uploaded map <b>${mapname} (${resname})</b> has been restored by <b>${adminName}</b> with the reason <b>"${reason}"</b>.<br>
-    
+
     If you have any questions or problems, please contact one of our map managers.<br><br>
     <sub>This is an automated message. Please do not reply</sub>`
     await ForumMessages.sendMessage(forumid, messageTitle, messageBody).catch((err) => {

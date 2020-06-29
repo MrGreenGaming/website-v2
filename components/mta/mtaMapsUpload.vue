@@ -280,7 +280,7 @@ export default {
       isDoneUploading: false,
       uploadingProgress: {},
       returnedServerMessages: [],
-      isEnabled: false
+      isEnabled: true
     }
   },
   computed: {},

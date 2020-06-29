@@ -40,6 +40,7 @@
     "nuxt-clipboard2": "^0.2.1",
     "nuxt-start": "^2.11.0",
     "qs": "^6.9.1",
+    "ssh2-sftp-client": "^5.1.2",
     "vue": "^2.6.11",
     "vue-paypal-checkout": "https://github.com/AfuSensi/vue-paypal-checkout/tarball/master",
     "vue-timeago": "^5.1.2",
