@@ -128,6 +128,11 @@ class mapUploads {
     await sftp.connect(serverInfo.ssh)
 
     const removeUploadedFiles = async () => {
+      // Try connect, silent error if connected.
+      try {
+        await sftp.connect(serverInfo.ssh)
+      } catch {}
+
       const zipExists = await sftp.exists(zipPath + originalName)
       if (zipExists) {
         await sftp.delete(zipPath + originalName, true).catch((err) => {
