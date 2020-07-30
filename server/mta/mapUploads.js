@@ -58,9 +58,9 @@ class mapUploads {
         port: global.Config.mapupload.Race.port,
         ssh: {
           user: global.Config.mapupload.Race.ssh.user,
-          privateKey: fse.readFileSync(`././config/keys/${global.Config.mapupload.Race.ssh.keyFileName}`),
           host: global.Config.mapupload.Race.ssh.host,
-          port: global.Config.mapupload.Race.ssh.port
+          port: global.Config.mapupload.Race.ssh.port,
+          debug: process.env.NODE_ENV === 'production' ? undefined : console.log
         }
       },
       RaceMix: {
@@ -68,12 +68,21 @@ class mapUploads {
         port: global.Config.mapupload.RaceMix.port,
         ssh: {
           user: global.Config.mapupload.RaceMix.ssh.user,
-          privateKey: fse.readFileSync(`././config/keys/${global.Config.mapupload.RaceMix.ssh.keyFileName}`),
           host: global.Config.mapupload.RaceMix.ssh.host,
-          port: global.Config.mapupload.RaceMix.ssh.port
+          port: global.Config.mapupload.RaceMix.ssh.port,
+          debug: process.env.NODE_ENV === 'production' ? undefined : console.log
         }
       }
-    }
+    };
+
+    // Use password/key based on config
+    (['Race', 'RaceMix']).forEach((k) => {
+      if (global.Config.mapupload[k].ssh.password) {
+        gameServerInfo[k].ssh.password = global.Config.mapupload[k].ssh.password
+      } else {
+        gameServerInfo[k].ssh.privateKey = fse.readFileSync(`././config/keys/${global.Config.mapupload[k].ssh.keyFileName}`)
+      }
+    })
     return true
   }
 
@@ -117,7 +126,7 @@ class mapUploads {
     }
 
     // Map path
-    const absolutePath = `/home/${serverInfo.ssh.user}/repo/resources/[maps]/[uploadedmaps]/`
+    const absolutePath = `/repo/resources/[maps]/[uploadedmaps]/`
     const nameNoExtension = originalName.replace('.zip', '')
     const zipPath = absolutePath + 'zips/'
     const folderPath =
@@ -126,7 +135,6 @@ class mapUploads {
     // Check if FTP has connection
     const sftp = new SftpClient()
     await sftp.connect(serverInfo.ssh)
-
     const removeUploadedFiles = async () => {
       // Try connect, silent error if connected.
       try {
@@ -172,7 +180,7 @@ class mapUploads {
       await sftp.end()
     } catch (err) {
       console.error(err)
-      await removeUploadedFiles()
+      removeUploadedFiles()
       throw new
       Error(
         `A problem has occured while uploading unpacked zip file to ftp. (${err.message})`
