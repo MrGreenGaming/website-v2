@@ -162,7 +162,7 @@ class PayPalService {
           `Donation #${body.txn_id}`,
           '<h1>Donation Complete!</h1><br>Thank you for supporting MrGreenGaming!<br><b>' +
 						orderString +
-						'</b>have been added to your account! <br> If you are ingame, please reconnect for it to take effect.<br><br>If you have any questions or problems, please contact one of our staff members.<br><sub>This is an automated message. Please do not reply</sub>'
+						"</b>have been added to your account! <br> If you are ingame, please reconnect for it to take effect. If you haven't received your rewards within 10 minutes then please contact Cena#1101 on Discord or on the forums!<br><br>If you have any questions or problems, please contact one of our staff members.<br><sub>This is an automated message. Please do not reply</sub>"
         )
         .catch((err) => {
           console.error('sendmessaegerr: ', err)
