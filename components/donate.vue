@@ -126,7 +126,7 @@
                     Thank you for supporting this community.
                   </v-flex>
                   <v-subheader v-if="donationComplete">
-                    You will receive your rewards shortly!
+                    You will receive your rewards within 10 minutes. If you haven't received it in 10 minutes then please contact Cena#1101 on Discord or on the forums.
                   </v-subheader>
                   <v-list>
                     <h2>Donation Summary</h2>
