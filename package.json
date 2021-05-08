@@ -29,7 +29,7 @@
     "fs-extra": "^7.0.1",
     "gamedig": "^2.0.20",
     "get-mp3-duration": "^1.0.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "md5-file": "^4.0.0",
     "moment": "^2.24.0",
     "mtasa": "^0.1.3",
