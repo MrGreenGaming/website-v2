@@ -6,16 +6,28 @@ const gameServers = [
   {
     name: 'mix',
     type: 'mtasa',
-    host: '5.2.65.6',
+    host: 'racemix.mrgreengaming.com',
     port: '22003'
   },
   {
     name: 'race',
     type: 'mtasa',
-    host: '5.2.65.5',
+    host: 'race.mrgreengaming.com',
     port: '22003'
+  },
+  {
+    name: 'mcsmp',
+    type: 'minecraft',
+    host: 'mc.mrgreengaming.com',
+    port: '25565'
+  },
+  {
+    name: 'discord',
+    type: 'discord',
+    guildId: '228439442069651456'
   }
 ]
+
 const gameServerInfo = new Map()
 
 class gameserversManager {
@@ -41,11 +53,21 @@ class gameserversManager {
   static fetchServers() {
     return new Promise(async (resolve, reject) => {
       for (const server of gameServers) {
-        await Gamedig.query({
-          type: server.type,
-          host: server.host,
-          port: server.port
-        })
+        let srv = {}
+        if (server.type != 'discord') {
+          srv = {
+            type: server.type,
+            host: server.host,
+            port: server.port
+          }
+        } else {
+          srv = {
+            type: server.type,
+            guildId: server.guildId
+          }
+        }
+
+        await Gamedig.query(srv)
           .then((state) => {
             gameServerInfo.set(server.name, state)
           })
