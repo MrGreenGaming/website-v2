@@ -54,7 +54,7 @@ class gameserversManager {
     return new Promise(async (resolve, reject) => {
       for (const server of gameServers) {
         let srv = {}
-        if (server.type != 'discord') {
+        if (server.type !== 'discord') {
           srv = {
             type: server.type,
             host: server.host,

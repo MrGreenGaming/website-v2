@@ -10,7 +10,7 @@ module.exports = {
         BASE_URL: 'https://mrgreengaming.com',
         API_URL: 'https://mrgreengaming.com'
       },
-	  'node_args': '--max_old_space_size=8192'
+	  node_args: '--max_old_space_size=8192'
     }
   ]
 }
