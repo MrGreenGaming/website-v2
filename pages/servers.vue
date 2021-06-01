@@ -77,7 +77,7 @@ export default {
           description:
 						'Are you all about driving in GTA: San Andreas? Compare yourself against other drivers on our Race server.<br>Set new top times, get achievements and make new international friends, all at the same time. <br>',
           gameStateImage:
-						'http://www.game-state.com/5.2.65.5:22003/n-560x95_FFFFFF_FFFFFF_000000_000000.png'
+						'http://www.game-state.com/5.2.65.5:22003/560x95_FFFFFF_FF9900_000000_000000.png'
         },
         {
           name: 'MTA:SA Race Mix',
@@ -87,7 +87,7 @@ export default {
           description:
 						'A mix of various in-vehicle gamemodes such as Destruction Derby, Reach The Flag, Capture The Flag and more!<br>',
           gameStateImage:
-						'http://www.game-state.com/5.2.65.6:22003/n-560x95_FFFFFF_FFFFFF_000000_000000.png'
+						'http://www.game-state.com/5.2.65.6:22003/560x95_FFFFFF_FF9900_000000_000000.png'
         },
         {
           name: 'Minecraft SMP',
@@ -97,7 +97,7 @@ export default {
           description:
 						'Mr. Greens Minecraft survival multiplayer server.<br>Get yourself whitelisted at the <a href="https://mrgreengaming.com/forums/topic/23572-minecraft-survival-whitelist-requests/">forums</a>',
           gameStateImage:
-						'https://api.loohpjames.com/serverbanner.png?ip=mc.mrgreengaming.com&port=25565&name=Mr.%20Green%20SMP'
+						'https://api.loohpjames.com/serverbanner.png?ip=mc.mrgreengaming.com&port=25565&name=Mr.%20Green%20SMP&backgroundurl=https://mrgreengaming.com/minecraft_banner_bg.png'
         }
       ]
     }
