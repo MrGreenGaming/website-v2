@@ -58,6 +58,7 @@ class vipManager {
       resolve()
     })
   }
+
   static handleVipBadges() {
     return new Promise(async (resolve, reject) => {
       const forumBadgeId = 31
@@ -89,6 +90,7 @@ class vipManager {
       resolve()
     })
   }
+
   static addVip(id, days, message) {
     return new Promise(async (resolve, reject) => {
       days = parseInt(days, 10)
@@ -158,6 +160,7 @@ class vipManager {
       })
     })
   }
+
   // Delete VIP horn
   static removeMemberHorn(forumid, hornid) {
     if (typeof forumid !== 'number' || typeof hornid !== 'number') return

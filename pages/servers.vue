@@ -88,6 +88,16 @@ export default {
 						'A mix of various in-vehicle gamemodes such as Destruction Derby, Reach The Flag, Capture The Flag and more!<br>',
           gameStateImage:
 						'http://www.game-state.com/5.2.65.6:22003/n-560x95_FFFFFF_FFFFFF_000000_000000.png'
+        },
+        {
+          name: 'Minecraft SMP',
+          image: 'minecraft-logo.png',
+          ip: 'mc.mrgreengaming.com:25565',
+          url: 'https://mrgreengaming.com/forums/topic/23573-mr-green-minecraft-survival/',
+          description:
+						'Mr. Greens Minecraft survival multiplayer server.<br>Get yourself whitelisted at the <a href="https://mrgreengaming.com/forums/topic/23572-minecraft-survival-whitelist-requests/">forums</a>',
+          gameStateImage:
+						'https://api.loohpjames.com/serverbanner.png?ip=mc.mrgreengaming.com&port=25565&name=Mr.%20Green%20SMP'
         }
       ]
     }

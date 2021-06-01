@@ -55,8 +55,16 @@ export default {
           link: 'mtasa://racemix.mrgreengaming.com:22003'
         },
         {
+          name: 'Minecraft SMP',
+          subName: 'Online Players:',
+          online: 0,
+          icon: 'minecraft-logo.png',
+          link: 'https://mrgreengaming.com/forums/topic/23573-mr-green-minecraft-survival/'
+        },
+        {
           name: 'Discord',
-          subName: '',
+          subName: 'Online Players:',
+          online: 0,
           icon: 'discord-purple.png',
           link: 'https://discord.gg/ge88KfF'
         }
@@ -70,15 +78,15 @@ export default {
   methods: {
     async getOnlinePlayers() {
       await this.$axios
-        .$get('/api/web/getgameserverinfo/?server=race&server=mix')
+        .$get('/api/web/getgameserverinfo/?server=race&server=mix&server=mcsmp&server=discord') // This should be made more dynamic.
         .then((res) => {
-          // This should be made more dynamic.
           if (res) {
-            if (res[0].players) {
-              this.gameServers[0].online = res[0].players.length
-            }
-            if (res[1].players) {
-              this.gameServers[1].online = res[1].players.length
+            for (let i = 0; i < res.length; i++) {
+              const srv = res[i]
+
+              if (srv.players) {
+                this.gameServers[i].online = srv.players.length
+              }
             }
           }
         })

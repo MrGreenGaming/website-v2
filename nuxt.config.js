@@ -93,7 +93,7 @@ module.exports = {
   */
   // Auth: https://www.mrgreengaming.com/forums/api/core/me?access_token= || /api/web/me?access_token=
   auth: {
-    plugins: [ '@/plugins/auth.js' ],
+    plugins: ['@/plugins/auth.js'],
     strategies: {
       forums: {
         _scheme: 'oauth2',
