@@ -84,7 +84,10 @@ export default {
             for (let i = 0; i < res.length; i++) {
               const srv = res[i]
 
-              if (srv.players) {
+              // Use presence_count for discord
+              if (srv.raw.presence_count) {
+                this.gameServers[i].online = srv.raw.presence_count
+              } else if (srv.players) {
                 this.gameServers[i].online = srv.players.length
               }
             }
