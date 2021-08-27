@@ -87,3 +87,4 @@ sw.*
 config/env.json
 config/keys/*
 !config/keys/README.md
+ecosystem.config.js

@@ -1,8 +1,10 @@
 version: '3'
 services:
   website-v2:
-    build: ./
+    build: .
     volumes:
       - ./config/env.json:/app/config/env.json
+      - ./ecosystem.config.js:/app/ecosystem.config.js
+      - ./config/keys:/app/config/keys
     ports:
-      - 80:9200
+      - 80:80

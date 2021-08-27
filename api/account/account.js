@@ -6,6 +6,7 @@ const express = require('express')
 const app = (module.exports = express())
 const Users = require('../../server/base/users')
 const VipManager = require('../../server/base/vipManager')
+const Utils = require('../utils')
 
 /**
  * API verification
@@ -25,12 +26,7 @@ app.use('/', async (req, res, next) => {
   }
 
   // Check app id presence
-  const appId = (req.appId = req.body.appId =
-		typeof req.body.appId === 'number'
-		  ? req.body.appId
-		  : typeof req.body.appId === 'string'
-		    ? parseInt(req.body.appId, 10)
-		    : undefined)
+  const appId = (req.appId = req.body.appId = Utils.parseToNumber(req.body.appId))
   if (isNaN(appId)) {
     deny(1, 'Invalid App ID')
     return
@@ -302,7 +298,8 @@ app.post('/login', async (req, res) => {
 })
 
 app.post('/details', async (req, res) => {
-  const userId = parseInt(req.body.userId, 10)
+  const userId = Utils.parseToNumber(req.body.userId)
+
   if (isNaN(userId)) {
     res.json({
       error: 1,
@@ -370,7 +367,7 @@ app.post('/details-multiple', async (req, res) => {
 
   const userReturn = []
   for (const requestedUser of usersArray) {
-    const userId = parseInt(requestedUser.userId, 10)
+    const userId = Utils.parseToNumber(requestedUser.userId)
 
     if (isNaN(userId)) {
       console.warn('userID NaN')

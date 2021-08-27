@@ -1,6 +1,7 @@
 const express = require('express')
 const app = (module.exports = express())
 const VipManager = require('../../server/base/vipManager')
+const Utils = require('../utils')
 
 /**
  * API verification
@@ -20,12 +21,8 @@ app.use('/', async (req, res, next) => {
   }
 
   // Check app id presence
-  const appId = (req.appId = req.body.appId =
-		typeof req.body.appId === 'number'
-		  ? req.body.appId
-		  : typeof req.body.appId === 'string'
-		    ? parseInt(req.body.appId, 10)
-		    : undefined)
+  const appId = (req.appId = req.body.appId = Utils.parseToNumber(req.body.appId))
+
   if (isNaN(appId)) {
     deny(1, 'Invalid App ID')
     return
@@ -114,7 +111,7 @@ app.post('/:userId/coins/changeBalance', async (req, res) => {
   /** @type {User} */
   const user = req.user
 
-  const amount = req.body.amount
+  const amount = Utils.parseToNumber(req.body.amount)
 
   if (typeof amount !== 'number' || !amount) {
     res.json({
@@ -166,7 +163,8 @@ app.post('/:userId/coins/submitTransaction', async (req, res) => {
   /** @type {User} */
   const user = req.user
 
-  const amount = req.body.amount
+  const amount = Utils.parseToNumber(req.body.amount)
+
   const comments =
 		req.body.comments && req.body.comments.length < 1000
 		  ? req.body.comments
@@ -219,7 +217,8 @@ app.post('/:userId/vip/addVip', async (req, res) => {
   /** @type {User} */
   const user = req.user
   const userid = user.getId()
-  const amount = req.body.amount
+
+  const amount = Utils.parseToNumber(req.body.amount)
 
   if (typeof amount !== 'number' || !amount) {
     res.json({
@@ -231,7 +230,7 @@ app.post('/:userId/vip/addVip', async (req, res) => {
 
   // Give vip
   try {
-    await VipManager.addVip(userid, parseInt(req.body.amount, 10))
+    await VipManager.addVip(userid, amount)
   } catch (error) {
     res.status(500)
     res.json({
