@@ -14,7 +14,7 @@
           </v-toolbar>
           <v-container>
             At Mr. Green Gaming we play various PC games. Here's an overview of the games we're active in.
-            Have any questions or game suggestions? Feel free to ask them on our <a href="https://www.mrgreengaming.com/forums">forums</a>
+            Have any questions or game suggestions? Feel free to ask them on our <a href="https://forums.mrgreengaming.com">forums</a>
           </v-container>
         </v-card>
       </v-flex>
@@ -93,9 +93,9 @@ export default {
           name: 'Minecraft SMP',
           image: 'minecraft-logo.png',
           ip: 'mc.mrgreengaming.com:25565',
-          url: 'https://mrgreengaming.com/forums/topic/23573-mr-green-minecraft-survival/',
+          url: 'https://forums.mrgreengaming.com/topic/23573-mr-green-minecraft-survival/',
           description:
-						'Mr. Greens Minecraft survival multiplayer server.<br>Get yourself whitelisted at the <a href="https://mrgreengaming.com/forums/topic/23572-minecraft-survival-whitelist-requests/">forums</a>',
+						'Mr. Greens Minecraft survival multiplayer server.<br>Get yourself whitelisted at the <a href="https://forums.mrgreengaming.com/topic/23572-minecraft-survival-whitelist-requests/">forums</a>',
           gameStateImage:
 						'https://api.loohpjames.com/serverbanner.png?ip=mc.mrgreengaming.com&port=25565&name=Mr.%20Green%20SMP&backgroundurl=https://mrgreengaming.com/minecraft_banner_bg.png'
         }

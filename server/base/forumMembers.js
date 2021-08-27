@@ -337,7 +337,7 @@ class forumMembers {
 
     // Mimick what the rest api would return
     // console.log(val)
-    const imagePath = 'https://mrgreengaming.com/forums/uploads/'
+    const imagePath = 'https://forums.mrgreengaming.com/uploads/'
     const memberObj = {}
     memberObj.id = val.id || false
     memberObj.name = val.name || false
@@ -362,7 +362,7 @@ class forumMembers {
         }
       }
     }
-    memberObj.profileUrl = 'https://mrgreengaming.com/forums/profile/' + val.id + '-' + val.members_seo_name + '/'
+    memberObj.profileUrl = 'https://forums.mrgreengaming.com/profile/' + val.id + '-' + val.members_seo_name + '/'
 
     return memberObj
   }

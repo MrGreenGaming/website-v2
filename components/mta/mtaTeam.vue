@@ -182,7 +182,7 @@ export default {
       currentTeam: {
         name: 'Name Of Team xx',
         ID: '10',
-        avatar: 'https://mrgreengaming.com/forums/uploads/monthly_2018_02/10568889_569147783191250_6509659335854153193_n.jpg.24a083205226e19feed8303cdc9b4d94.jpg',
+        avatar: 'https://forums.mrgreengaming.com/uploads/monthly_2018_02/10568889_569147783191250_6509659335854153193_n.jpg.24a083205226e19feed8303cdc9b4d94.jpg',
         owner: 'KaliBwoy',
         tag: 'TAG-',
         members: '30',

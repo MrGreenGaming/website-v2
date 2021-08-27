@@ -97,7 +97,7 @@ module.exports = {
       forums: {
         _scheme: 'oauth2',
         authorization_endpoint:
-					'https://mrgreengaming.com/forums/oauth/authorize/',
+					'https://forums.mrgreengaming.com/oauth/authorize/',
         userinfo_endpoint: 'https://mrgreengaming.com/api/web/me',
         scope: ['profile'],
         response_type: 'token',

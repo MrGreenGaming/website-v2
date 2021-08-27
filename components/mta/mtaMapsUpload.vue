@@ -268,7 +268,7 @@
 export default {
   data() {
     return {
-      mapRulesTopicUrl: 'https://mrgreengaming.com/forums/topic/14734-editor-plugin-mapping-rules-for-mta/',
+      mapRulesTopicUrl: 'https://forums.mrgreengaming.com/topic/14734-editor-plugin-mapping-rules-for-mta/',
       errorMessages: [],
       files: [],
       validGameModePrefixes: ['nts', 'race', 'dl', 'rtf', 'dd', 'ctf', 'sh'],
@@ -370,9 +370,9 @@ export default {
                 mapname: theFile.name,
                 type: 'success',
                 message:
-                `Update successful!. 
-                Wait for a map manager to approve or deny your map update. 
-                You will be notified via forum PM when the map status changes (accepted/declined). 
+                `Update successful!.
+                Wait for a map manager to approve or deny your map update.
+                You will be notified via forum PM when the map status changes (accepted/declined).
                 Thank you for your contribution!`
               })
             } else {
@@ -381,9 +381,9 @@ export default {
                 mapname: theFile.name,
                 type: 'success',
                 message:
-                `Upload successful!. 
-                Wait for a map manager to approve or deny your map. 
-                You will be notified via forum PM when the map status changes (accepted/declined). 
+                `Upload successful!.
+                Wait for a map manager to approve or deny your map.
+                You will be notified via forum PM when the map status changes (accepted/declined).
                 Thank you for your contribution!`
               })
             }
@@ -408,7 +408,7 @@ export default {
       this.isDoneUploading = true
     },
     goRegister() {
-      window.location = 'https://mrgreengaming.com/forums/register/'
+      window.location = 'https://forums.mrgreengaming.com/register/'
     },
     checkSelectedFile(event) {
       // Client side validating, just to check before sending to server

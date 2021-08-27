@@ -24,7 +24,7 @@ app.get('/communitynews', async (req, res, next) => {
 
   const news = await axios
     .get(
-      'https://mrgreengaming.com/forums/api/forums/topics?perPage=' +
+      'https://forums.mrgreengaming.com/api/forums/topics?perPage=' +
 				amount +
 				'&forums=2&hidden=0&page=1&sortBy=date&sortDir=desc&key=' +
 				apiKey
@@ -72,7 +72,7 @@ app.get('/searchmembers', async (req, res, next) => {
   }
   const searchResults = await axios
     .get(
-      'https://mrgreengaming.com/forums/api/core/members?key=' +
+      'https://forums.mrgreengaming.com/api/core/members?key=' +
 				apiKey +
 				'&sortBy=name&page=1&name=' +
 				searchFor
@@ -630,7 +630,7 @@ app.get('/me', async (req, res, next) => {
   let member
   try {
     endPointData = await axios.get(
-      'https://www.mrgreengaming.com/forums/api/core/me?access_token=' +
+      'https://forums.mrgreengaming.com/api/core/me?access_token=' +
 				authToken
     )
     member = endPointData.data

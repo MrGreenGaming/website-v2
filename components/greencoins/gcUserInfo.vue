@@ -56,7 +56,7 @@ export default {
       this.$auth.loginWith('forums')
     },
     register() {
-      window.location = 'https://mrgreengaming.com/forums/register/'
+      window.location = 'https://forums.mrgreengaming.com/register/'
     },
     async getUserInfo() {
       if (!this.$auth.$state.loggedIn) return

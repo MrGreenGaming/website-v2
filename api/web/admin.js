@@ -45,7 +45,7 @@ app.use('/', async (req, res, next) => {
   } else {
     try {
       returnedData = await axios.get(
-        'https://www.mrgreengaming.com/forums/api/core/me?access_token=' +
+        'https://forums.mrgreengaming.com/api/core/me?access_token=' +
 					authToken
       )
       member = returnedData.data

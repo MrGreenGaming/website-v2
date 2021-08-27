@@ -18,7 +18,7 @@
         <v-card flat class="mb-5">
           <v-layout column>
             <v-layout row>
-              <v-img class="mr-2" src="https://mrgreengaming.com/forums/uploads/monthly_2018_05/Liverpool.thumb.jpg.8e52e4ebc260503396e0e70eb73ac929.jpg" contain max-width="75px" max-height="75px" />
+              <v-img class="mr-2" src="https://forums.mrgreengaming.com/uploads/monthly_2018_05/Liverpool.thumb.jpg.8e52e4ebc260503396e0e70eb73ac929.jpg" contain max-width="75px" max-height="75px" />
               <v-layout column>
                 <span class="subheading font-weight-bold">Name: Cena</span>
                 <span class="body-1">Group: Owner</span>
@@ -92,7 +92,7 @@
                   Send To:
                 </h2>
                 <v-layout row>
-                  <v-img class="mr-2" src="https://mrgreengaming.com/forums/uploads/monthly_2018_05/Liverpool.thumb.jpg.8e52e4ebc260503396e0e70eb73ac929.jpg" contain max-width="75px" max-height="75px" />
+                  <v-img class="mr-2" src="https://forums.mrgreengaming.com/uploads/monthly_2018_05/Liverpool.thumb.jpg.8e52e4ebc260503396e0e70eb73ac929.jpg" contain max-width="75px" max-height="75px" />
                   <v-layout column>
                     <span class="subheading font-weight-bold">Name: Cena</span>
                     <span class="body-1">Group: Owner</span>

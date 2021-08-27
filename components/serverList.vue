@@ -59,7 +59,7 @@ export default {
           subName: 'Online Players:',
           online: 0,
           icon: 'minecraft-logo.png',
-          link: 'https://mrgreengaming.com/forums/topic/23573-mr-green-minecraft-survival/'
+          link: 'https://forums.mrgreengaming.com/topic/23573-mr-green-minecraft-survival/'
         },
         {
           name: 'Discord',

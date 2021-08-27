@@ -69,7 +69,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     let member
     try {
       returnedData = await axios.get(
-        'https://www.mrgreengaming.com/forums/api/core/me?access_token=' + authToken
+        'https://forums.mrgreengaming.com/api/core/me?access_token=' + authToken
       )
       member = returnedData.data
     } catch (err) {
