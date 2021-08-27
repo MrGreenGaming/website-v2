@@ -76,7 +76,7 @@ export default {
     try {
       theData = await $axios.$get('/api/web/communitynews/')
     } catch (e) {
-      console.log('communityNews asyncData Error:', e.config.url, e.response.status)
+      console.log('communityNews asyncData Error:', e.config.url, e.response != null ? e.response.status : e)
       return { communityNews: [] }
     }
     return { communityNews: theData }
