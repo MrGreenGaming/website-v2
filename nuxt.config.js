@@ -3,7 +3,6 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 // const pkg = require("./package");
 module.exports = {
   serverMiddleware: ['~/api/api.js'],
-  mode: 'universal',
   router: {
     middleware: 'redirect',
     scrollBehavior: function (to, from, savedPosition) {
