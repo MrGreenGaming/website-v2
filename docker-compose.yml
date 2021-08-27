@@ -2,6 +2,7 @@ version: '3'
 services:
   website-v2:
     build: .
+    restart: unless-stopped
     volumes:
       - ./config/env.json:/app/config/env.json
       - ./ecosystem.config.js:/app/ecosystem.config.js
