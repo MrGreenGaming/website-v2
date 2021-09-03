@@ -64,14 +64,9 @@
 </template>
 <script>
 export default {
-  props: {
-    news: {
-      type: Array,
-      required: true
-    }
-  },
   data() {
     return {
+      news: [],
       maxNewsItems: 3
     }
   },
@@ -80,8 +75,22 @@ export default {
       return this.news.slice(0, this.maxNewsItems)
     }
   },
-  mounted() {},
+  mounted() {
+    this.getCommunityNews()
+    setInterval(this.getOnlinePlayers, 60000) // Refresh player count every x
+  },
   methods: {
+    async getCommunityNews() {
+      await this.$axios.$get('/api/web/communitynews/')
+        .then((res) => {
+          if (res) {
+            this.news = res
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    },
     formatPostContent(content) {
       return content
       // return this.replaceAll(content, "<img", "<v-img");

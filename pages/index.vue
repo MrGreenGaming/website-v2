@@ -22,7 +22,7 @@
           </v-flex>
 
           <v-flex class="my-3">
-            <communityNews :news="communityNews" />
+            <communityNews />
           </v-flex>
         </v-flex>
 
@@ -67,19 +67,8 @@ export default {
   },
   data() {
     return {
-      communityNews: false,
       userInfo: false
     }
-  },
-  async asyncData({ $axios }) {
-    let theData
-    try {
-      theData = await $axios.$get('/api/web/communitynews/')
-    } catch (e) {
-      console.log('communityNews asyncData Error:', e.config.url, e.response != null ? e.response.status : e)
-      return { communityNews: [] }
-    }
-    return { communityNews: theData }
   },
   created() {
     // this.fetchTheUser();
