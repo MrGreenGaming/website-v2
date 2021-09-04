@@ -333,7 +333,7 @@ class forumMembers {
   static formatForumMemberFromDb(val) {
     // default avatar
     // data:image\/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%20style%3D%22background%3A%23c46f62%22%3E%3Cg%3E%3Ctext%20text-anchor%3D%22middle%22%20dy%3D%22.35em%22%20x%3D%22512%22%20y%3D%22512%22%20fill%3D%22%23ffffff%22%20font-size%3D%22700%22%20font-family%3D%22-apple-system%2C%20BlinkMacSystemFont%2C%20Roboto%2C%20Helvetica%2C%20Arial%2C%20sans-serif%22%3EC%3C%2Ftext%3E%3 LETTER HERE %2Fg%3E%3C%2Fsvg%3E
-    // Avatar path: https://mrgreengaming.com/forums/uploads/
+    // Avatar path: https://forums.mrgreengaming.com/uploads/
 
     // Mimick what the rest api would return
     // console.log(val)

@@ -97,7 +97,7 @@ class CustomDiscordMembersManager {
       forumID: forumID,
       discordID: discordID,
       name: forumMember.getName(),
-      profileUrl: `https://mrgreengaming.com/forums/profile/${forumMember.getId()}-${forumMember.getName()}`,
+      profileUrl: `https://forums.mrgreengaming.com/profile/${forumMember.getId()}-${forumMember.getName()}`,
       created: forumMember.getCreated(),
       coinsBalance: forumMember.getCoins().getBalance(),
       avatar: forumMember.getAvatar(),

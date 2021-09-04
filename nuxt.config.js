@@ -90,7 +90,7 @@ module.exports = {
   /*
   ** Build configuration
   */
-  // Auth: https://www.mrgreengaming.com/forums/api/core/me?access_token= || /api/web/me?access_token=
+  // Auth: https://forums.mrgreengaming.com/api/core/me?access_token= || /api/web/me?access_token=
   auth: {
     plugins: ['@/plugins/auth.js'],
     strategies: {

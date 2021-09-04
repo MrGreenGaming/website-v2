@@ -1,6 +1,6 @@
 // ADMIN PAGE ROUTES
 // Will be reauth with access token
-// https://www.mrgreengaming.com/forums/api/core/me?access_token=
+// https://forums.mrgreengaming.com/api/core/me?access_token=
 
 const axios = require('axios')
 const express = require('express')
