@@ -8,4 +8,4 @@ services:
       - ./ecosystem.config.js:/app/ecosystem.config.js
       - ./config/keys:/app/config/keys
     ports:
-      - 80:80
+      - 80:3000

@@ -2,6 +2,10 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 // const pkg = require("./package");
 module.exports = {
+  server: {
+    host: '0.0.0.0',
+    port: '3000'
+  },
   serverMiddleware: ['~/api/api.js'],
   router: {
     middleware: 'redirect',
